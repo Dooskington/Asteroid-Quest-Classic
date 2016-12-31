@@ -8,11 +8,15 @@ public class TurretComponent : MonoBehaviour
     public Vector2 targetPosition = Vector2.zero;
     public GameObject projectileSpawnObject;
     public GameObject projectilePrefab;
+    public AudioEvent fireAudioEvent;
 
     private Rigidbody2D rootRigidbodyComponent;
+    private AudioSource audioSourceComponent;
 
     public void Fire()
     {
+        fireAudioEvent.Play(transform.position);
+
         GameObject projectile = Instantiate(projectilePrefab, 
             projectileSpawnObject.transform.position, 
             projectileSpawnObject.transform.rotation) as GameObject;
@@ -24,6 +28,7 @@ public class TurretComponent : MonoBehaviour
     private void Awake()
     {
         rootRigidbodyComponent = transform.parent.gameObject.GetComponent<Rigidbody2D>();
+        audioSourceComponent = GetComponent<AudioSource>();
     }
 
     private void Update()
