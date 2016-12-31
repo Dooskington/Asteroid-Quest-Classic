@@ -25,6 +25,11 @@ public class PlayerInputComponent : MonoBehaviour
         {
             turretComponent.isActive = true;
             turretComponent.targetPosition = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.0f));
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                turretComponent.Fire();
+            }
         }
         else
         {

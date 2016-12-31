@@ -6,12 +6,27 @@ public class TurretComponent : MonoBehaviour
 {
     public bool isActive = false;
     public Vector2 targetPosition = Vector2.zero;
-    public GameObject laserSightObject;
-	
-	private void Update()
-    {
-        laserSightObject.SetActive(isActive);
+    public GameObject projectileSpawnObject;
+    public GameObject projectilePrefab;
 
+    private Rigidbody2D rootRigidbodyComponent;
+
+    public void Fire()
+    {
+        GameObject projectile = Instantiate(projectilePrefab, 
+            projectileSpawnObject.transform.position, 
+            projectileSpawnObject.transform.rotation) as GameObject;
+
+        projectile.GetComponent<Rigidbody2D>().velocity = rootRigidbodyComponent.velocity;
+    }
+
+    private void Awake()
+    {
+        rootRigidbodyComponent = transform.parent.gameObject.GetComponent<Rigidbody2D>();
+    }
+
+    private void Update()
+    {
         if (isActive)
         {
             float angleRad = Mathf.Atan2(targetPosition.y - transform.position.y, targetPosition.x - transform.position.x);
