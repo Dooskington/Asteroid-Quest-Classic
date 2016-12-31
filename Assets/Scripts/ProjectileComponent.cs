@@ -4,29 +4,30 @@ using UnityEngine;
 
 public class ProjectileComponent : MonoBehaviour
 {
+    public GameObject owner;
     public float moveSpeed = 200.0f;
+    public float lifetimeSeconds = 2.0f;
 
     private Rigidbody2D rigidbodyComponent;
 
     private void Awake()
     {
         rigidbodyComponent = GetComponent<Rigidbody2D>();
-        Destroy(gameObject, 5.0f);
-
-        //rigidbodyComponent.AddForce(transform.right * moveSpeed * Time.deltaTime, ForceMode2D.Impulse);
-        //rigidbodyComponent.velocity = new Vector2(transform.right.x, transform.right.y) * (moveSpeed * Time.deltaTime);
     }
 
     private void Start()
     {
+        Destroy(gameObject, lifetimeSeconds);
         rigidbodyComponent.AddForce(transform.right * moveSpeed * Time.deltaTime, ForceMode2D.Impulse);
     }
 
-    /*
-    private void FixedUpdate()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        //rigidbodyComponent.AddForce(transform.right * moveSpeed * Time.deltaTime, ForceMode2D.Impulse);
-    }
-    */
+        if (other.gameObject.layer == owner.layer)
+        {
+            return;
+        }
 
+        Destroy(gameObject);
+    }
 }

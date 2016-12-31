@@ -18,6 +18,7 @@ public class TurretComponent : MonoBehaviour
             projectileSpawnObject.transform.rotation) as GameObject;
 
         projectile.GetComponent<Rigidbody2D>().velocity = rootRigidbodyComponent.velocity;
+        projectile.GetComponent<ProjectileComponent>().owner = gameObject;
     }
 
     private void Awake()
