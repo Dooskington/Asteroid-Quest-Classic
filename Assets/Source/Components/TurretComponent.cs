@@ -11,7 +11,6 @@ public class TurretComponent : MonoBehaviour
     public AudioEvent fireAudioEvent;
 
     private Rigidbody2D rootRigidbodyComponent;
-    private AudioSource audioSourceComponent;
 
     public void Fire()
     {
@@ -28,7 +27,6 @@ public class TurretComponent : MonoBehaviour
     private void Awake()
     {
         rootRigidbodyComponent = transform.parent.gameObject.GetComponent<Rigidbody2D>();
-        audioSourceComponent = GetComponent<AudioSource>();
     }
 
     private void Update()
