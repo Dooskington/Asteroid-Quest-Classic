@@ -11,6 +11,12 @@ public class ShipMovementComponent : MonoBehaviour
 
     private Rigidbody2D rigidbodyComponent;
 
+    public void Halt()
+    {
+        thrust = 0.0f;
+        rigidbodyComponent.velocity = Vector3.zero;
+    }
+
 	private void Awake()
     {
         rigidbodyComponent = GetComponent<Rigidbody2D>();

@@ -15,11 +15,16 @@ public class PlayerInputComponent : MonoBehaviour
     {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         shipMovementComponent = GetComponent<ShipMovementComponent>();
+
+        thrustSlider.onValueChanged.AddListener(delegate { ThrustChange(); });
     }
 
     private void Update ()
     {
-        shipMovementComponent.thrust = thrustSlider.value;
+        if (shipMovementComponent.thrust != thrustSlider.value)
+        {
+            thrustSlider.value = shipMovementComponent.thrust;
+        }
 
         if (Input.GetKey(KeyCode.Q))
         {
@@ -35,6 +40,11 @@ public class PlayerInputComponent : MonoBehaviour
         {
             turretComponent.isActive = false;
         }
+    }
+
+    private void ThrustChange()
+    {
+        shipMovementComponent.thrust = thrustSlider.value;
     }
 
 }

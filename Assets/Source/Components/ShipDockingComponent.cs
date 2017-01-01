@@ -8,6 +8,8 @@ public class ShipDockingComponent : MonoBehaviour
     public Text dockingIndicatorText;
     public GameObject stationPanel;
 
+    private ShipMovementComponent shipMovementComponent;
+
     private bool isDockable = false;
     public bool IsDockable
     {
@@ -42,12 +44,19 @@ public class ShipDockingComponent : MonoBehaviour
     {
         IsDocked = true;
         IsDockable = false;
+
+        shipMovementComponent.Halt();
     }
 
     public void Undock()
     {
         IsDocked = false;
         IsDockable = true;
+    }
+
+    private void Awake()
+    {
+        shipMovementComponent = GetComponent<ShipMovementComponent>();
     }
 
     private void Update()
@@ -59,7 +68,7 @@ public class ShipDockingComponent : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            IsDocked = true;
+            Dock();
         }
     }
 
