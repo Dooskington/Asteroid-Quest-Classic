@@ -41,6 +41,7 @@ public class ShipMovementComponent : MonoBehaviour
     private Vector2 m_destination;
     private Rigidbody2D m_rigidbodyComponent;
     private AudioSource m_audioSourceComponent;
+    private ShipReactorComponent m_reactorComponent;
 
     public void Halt()
     {
@@ -66,16 +67,22 @@ public class ShipMovementComponent : MonoBehaviour
     {
         m_rigidbodyComponent = GetComponent<Rigidbody2D>();
         m_audioSourceComponent = GetComponent<AudioSource>();
+        m_reactorComponent = GetComponent<ShipReactorComponent>();
     }
 
     private void Update()
     {
         m_audioSourceComponent.volume = m_thrust;
+
+        if (IsMoving)
+        {
+            m_reactorComponent.UsePower(m_thrust * 25.0f);
+        }
     }
 
     private void FixedUpdate()
     {
-        m_thrust = Mathf.Lerp(m_thrust, m_targetThrust, 1.0f * Time.deltaTime);
+        m_thrust = Mathf.Lerp(m_thrust, m_targetThrust, Time.deltaTime);
         m_thrust = Mathf.Clamp(m_thrust, 0.0f, m_maxThrust);
 
         m_rigidbodyComponent.velocity = Vector2.ClampMagnitude(m_rigidbodyComponent.velocity, m_maxSpeed);
