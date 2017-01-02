@@ -26,6 +26,15 @@ public class PlayerInputComponent : MonoBehaviour
             thrustSlider.value = shipMovementComponent.thrust;
         }
 
+        if (Input.GetMouseButtonDown(0))
+        {
+            Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.0f);
+            shipMovementComponent.Destination = mainCamera.ScreenToWorldPoint(mousePosition);
+            shipMovementComponent.BeginOrientation();
+            //shipMovementComponent.thrust = 1.0f;
+        }
+
+        /*
         if (Input.GetKey(KeyCode.Q))
         {
             turretComponent.isActive = true;
@@ -40,6 +49,7 @@ public class PlayerInputComponent : MonoBehaviour
         {
             turretComponent.isActive = false;
         }
+        */
     }
 
     private void ThrustChange()
