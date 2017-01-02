@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class ShipMovementComponent : MonoBehaviour
 {
-    public float thrust = 0.0f;
-    public float m_moveSpeed = 100.0f;
-    public float rotationSpeed = 180.0f;
-    public float maxSpeed = 10.0f;
-    public GameObject mapBlipPrefab;
-    public GameObject mapLinePrefab;
+    public float m_targetThrust = 0.0f;
+    public float m_thrust = 0.0f;
+    public float m_maxThrust = 1.0f;
+    public float m_acceleration = 100.0f;
+    public float m_maxSpeed = 10.0f;
+    public float m_rotationSpeed = 0.5f;
+
+    public GameObject m_mapBlipPrefab;
+    public GameObject m_mapLinePrefab;
 
     public bool IsMoving { get; set; }
 
@@ -23,154 +26,108 @@ public class ShipMovementComponent : MonoBehaviour
         set
         {
             m_destination = value;
-            IsMoving = true;
-            CreateDestinationLine();
+            BeginMovement();
         }
     }
 
-    private bool isRotating = false;
-    private Quaternion startRotation;
-    private Quaternion endRotation;
-    private float rotationStartTime;
+    private Quaternion m_startRotation;
+    private Quaternion m_endRotation;
+    private float m_moveStartTime;
 
-    private GameObject mapBlip;
-    private GameObject mapLine;
-    private LineRenderer mapLineRenderer;
+    private GameObject m_mapBlip;
+    private GameObject m_mapLine;
+    private LineRenderer m_mapLineRenderer;
 
     private Vector2 m_destination;
     private Rigidbody2D m_rigidbodyComponent;
+    private AudioSource m_audioSourceComponent;
 
     public void Halt()
     {
-        thrust = 0.0f;
+        IsMoving = false;
+
+        m_thrust = 0.0f;
         m_rigidbodyComponent.velocity = Vector3.zero;
+        m_rigidbodyComponent.angularVelocity = 0.0f;
     }
 
-    public void BeginOrientation()
+    public void BeginMovement()
     {
-        Vector2 direction = -((new Vector2(transform.position.x, transform.position.y) - Destination).normalized);
-        if (direction != Vector2.zero)
-        {
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        IsMoving = true;
+        m_targetThrust = m_maxThrust;
+        m_moveStartTime = Time.time;
 
-            isRotating = true;
-            rotationStartTime = Time.time;
+        m_startRotation = transform.rotation;
 
-            startRotation = transform.rotation;
-            endRotation = Quaternion.Euler(0.0f, 0.0f, angle);
-        }
+        CreateMapLine();
     }
 
-	private void Awake()
+    private void Awake()
     {
         m_rigidbodyComponent = GetComponent<Rigidbody2D>();
+        m_audioSourceComponent = GetComponent<AudioSource>();
+    }
+
+    private void Update()
+    {
+        m_audioSourceComponent.volume = m_thrust;
     }
 
     private void FixedUpdate()
     {
+        m_thrust = Mathf.Lerp(m_thrust, m_targetThrust, 1.0f * Time.deltaTime);
+        m_thrust = Mathf.Clamp(m_thrust, 0.0f, m_maxThrust);
+
+        m_rigidbodyComponent.velocity = Vector2.ClampMagnitude(m_rigidbodyComponent.velocity, m_maxSpeed);
+
         float distance = Vector3.Distance(transform.position, Destination);
 
-        if (mapLineRenderer)
+        if (m_mapLineRenderer)
         {
-            mapLineRenderer.SetPosition(0, transform.position);
-            mapLineRenderer.material.SetTextureScale("_MainTex", new Vector2(distance * 3.5f, 1));
-            mapLineRenderer.material.SetTextureOffset("_MainTex", new Vector2(-(distance * 3.5f), 1));
+            m_mapLineRenderer.SetPosition(0, transform.position);
+            m_mapLineRenderer.material.SetTextureScale("_MainTex", new Vector2(distance * 3.5f, 1));
+            m_mapLineRenderer.material.SetTextureOffset("_MainTex", new Vector2(-(distance * 3.5f), 1));
         }
 
-        if (isRotating)
+        if (IsMoving)
         {
-            float elapsedTime = Time.time - rotationStartTime;
-            float rotationTime = distance / rotationSpeed;
+            m_rigidbodyComponent.AddForce(transform.right * (m_thrust * m_acceleration) * Time.deltaTime);
+
+            float elapsedTime = Time.time - m_moveStartTime;
+            float rotationTime = distance / m_rotationSpeed;
             float percentage = elapsedTime / rotationTime;
 
-            transform.rotation = Quaternion.Lerp(startRotation, 
-                endRotation,
+            Vector2 direction = -((new Vector2(transform.position.x, transform.position.y) - Destination).normalized);
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            m_startRotation = transform.rotation;
+            m_endRotation = Quaternion.Euler(0.0f, 0.0f, angle);
+
+            transform.rotation = Quaternion.Slerp(m_startRotation,
+                m_endRotation,
                 percentage);
 
-            if (percentage >= 1.0f)
+            if (distance <= 4.0f)
             {
-                //isRotating = false;
-            }
-        }
-
-        /*
-        if (thrust > 0.0f)
-        {
-            m_rigidbodyComponent.AddForce(transform.right * (thrust * moveSpeed) * Time.deltaTime);
-        }
-
-        if (thrust > 0.0f)
-        {
-            if (Input.GetKey(KeyCode.A))
-            {
-                transform.Rotate(0.0f, 0.0f, rotationSpeed * Time.deltaTime);
+                m_targetThrust = 0.5f;
             }
 
-            if (Input.GetKey(KeyCode.D))
-            {
-                transform.Rotate(0.0f, 0.0f, -rotationSpeed * Time.deltaTime);
-            }
-        }
-        */
-
-        if (IsMoving)
-        {
-            thrust = Mathf.Lerp(thrust, 1.0f, 1.0f * Time.deltaTime);
-
-            Debug.DrawLine(transform.position, new Vector3(Destination.x, Destination.y, 0.0f), Color.green);
-
-            m_rigidbodyComponent.AddForce(transform.right * (thrust * m_moveSpeed) * Time.deltaTime);
-
-            Vector2 direction = -((new Vector2(transform.position.x, transform.position.y) - Destination).normalized);
-            if (direction != Vector2.zero)
-            {
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-                startRotation = transform.rotation;
-                endRotation = Quaternion.Euler(0.0f, 0.0f, angle);
-
-                /*
-                float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-                transform.rotation = Quaternion.Lerp(transform.rotation, 
-                    Quaternion.Euler(0.0f, 0.0f, angle), 
-                    rotationSpeed * Time.deltaTime);
-                    */
-            }
-
-            if (distance <= 3.0f)
-            {
-                thrust = 0.25f;
-            }
-
-            if (distance <= 1.0f)
+            if (distance <= 1.5f)
             {
                 IsMoving = false;
-            }
-        }
-    }
+                m_targetThrust = 0.0f;
 
-    /*
-    private void FixedUpdate()
-    {
-        if (IsMoving)
-        {
-            Vector3 direction = (Destination - transform.position).normalized;
-            rigidbodyComponent.velocity = direction * speed;
-
-            if (Vector3.Distance(transform.position, Destination) <= 0.25f)
-            {
-                IsMoving = false;
+                Destroy(m_mapBlip);
+                Destroy(m_mapLine);
             }
         }
         else
         {
-            animatorController.SetBool("isMoving", false);
-            rigidbodyComponent.velocity *= 0.9f;
+            if (m_thrust <= 0.05f)
+            {
+                Halt();
+            }
         }
     }
-    */
-
 
     private Vector3 GetRelativeAngles(Vector3 angles)
     {
@@ -194,24 +151,24 @@ public class ShipMovementComponent : MonoBehaviour
         return relativeAngles;
     }
 
-    private void CreateDestinationLine()
+    private void CreateMapLine()
     {
-        if (mapLine)
+        if (m_mapLine)
         {
-            DestroyImmediate(mapLine);
+            DestroyImmediate(m_mapLine);
         }
 
-        if (mapBlip)
+        if (m_mapBlip)
         {
-            DestroyImmediate(mapBlip);
+            DestroyImmediate(m_mapBlip);
         }
 
-        mapBlip = Instantiate(mapBlipPrefab, new Vector3(Destination.x, Destination.y), Quaternion.identity) as GameObject;
-        mapLine = Instantiate(mapLinePrefab, Vector3.zero, Quaternion.identity) as GameObject;
+        m_mapBlip = Instantiate(m_mapBlipPrefab, new Vector3(Destination.x, Destination.y), Quaternion.identity) as GameObject;
+        m_mapLine = Instantiate(m_mapLinePrefab, Vector3.zero, Quaternion.identity) as GameObject;
 
-        mapLineRenderer = mapLine.GetComponent<LineRenderer>();
-        mapLineRenderer.SetPosition(0, transform.position);
-        mapLineRenderer.SetPosition(1, new Vector3(Destination.x, Destination.y, 0.0f));
-        mapLineRenderer.enabled = true;
+        m_mapLineRenderer = m_mapLine.GetComponent<LineRenderer>();
+        m_mapLineRenderer.SetPosition(0, transform.position);
+        m_mapLineRenderer.SetPosition(1, new Vector3(Destination.x, Destination.y, 0.0f));
+        m_mapLineRenderer.enabled = true;
     }
 }
