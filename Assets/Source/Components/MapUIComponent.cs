@@ -50,6 +50,7 @@ public class MapUIComponent : MonoBehaviour, IPointerClickHandler
             Image blipImage = blips[blipTransform];
 
             blipImage.rectTransform.anchoredPosition = RectTransformUtility.WorldToScreenPoint(null, blipTransform.position);
+            blipImage.rectTransform.rotation = blipTransform.rotation;
         }
     }
 }

@@ -28,7 +28,6 @@ public class PlayerInputComponent : MonoBehaviour
 
         mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
 
-        /*
         if (Input.GetKey(KeyCode.Q))
         {
             turretComponent.isActive = true;
@@ -43,6 +42,5 @@ public class PlayerInputComponent : MonoBehaviour
         {
             turretComponent.isActive = false;
         }
-        */
     }
 }

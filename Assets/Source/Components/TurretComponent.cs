@@ -10,6 +10,9 @@ public class TurretComponent : MonoBehaviour
     public GameObject projectilePrefab;
     public AudioEvent fireAudioEvent;
 
+    public Texture2D defaultCursorSprite;
+    public Texture2D crosshairSprite;
+
     private Rigidbody2D rootRigidbodyComponent;
 
     public void Fire()
@@ -33,6 +36,8 @@ public class TurretComponent : MonoBehaviour
     {
         if (isActive)
         {
+            //Cursor.SetCursor(crosshairSprite, Vector2.zero, CursorMode.Auto);
+
             float angleRad = Mathf.Atan2(targetPosition.y - transform.position.y, targetPosition.x - transform.position.x);
             float angleDeg = (180 / Mathf.PI) * angleRad;
 

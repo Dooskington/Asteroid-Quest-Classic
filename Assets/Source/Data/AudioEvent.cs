@@ -7,7 +7,10 @@ public class AudioEvent : ScriptableObject
 {
     public AudioClip[] audioClips;
 
+    public bool isVolumeRandom = true;
     public RangedFloat volume;
+
+    public bool isPitchRandom = true;
     public RangedFloat pitch;
 	
     public void Play(Vector3 position)
@@ -23,10 +26,24 @@ public class AudioEvent : ScriptableObject
         AudioSource audioSourceComponent = gameObject.AddComponent<AudioSource>();
 
         audioSourceComponent.clip = clip;
-        audioSourceComponent.volume = volume.GetRandomValue();
-        audioSourceComponent.pitch = pitch.GetRandomValue();
+
+        if (isVolumeRandom)
+        {
+            audioSourceComponent.volume = volume.GetRandomValue();
+        }
+
+        if (isPitchRandom)
+        {
+            audioSourceComponent.pitch = pitch.GetRandomValue();
+        }
+
         audioSourceComponent.Play();
 
         Destroy(gameObject, clip.length);
+    }
+
+    public void Play()
+    {
+        Play(Vector3.zero);
     }
 }
