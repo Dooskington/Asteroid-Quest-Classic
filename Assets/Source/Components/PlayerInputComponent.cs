@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class PlayerInputComponent : MonoBehaviour
 {
+    public GameObject mapPanel;
     public Slider thrustSlider;
     public TurretComponent turretComponent;
 
@@ -16,25 +17,16 @@ public class PlayerInputComponent : MonoBehaviour
     {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();
         shipMovementComponent = GetComponent<ShipMovementComponent>();
-
-        thrustSlider.onValueChanged.AddListener(delegate { ThrustChange(); });
     }
 
-    private void Update ()
+    private void Update()
     {
         if (shipMovementComponent.m_thrust != thrustSlider.value)
         {
             thrustSlider.value = shipMovementComponent.m_thrust;
         }
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (!EventSystem.current.IsPointerOverGameObject())
-            {
-                Vector3 mousePosition = new Vector3(Input.mousePosition.x, Input.mousePosition.y, 0.0f);
-                shipMovementComponent.Destination = mainCamera.ScreenToWorldPoint(mousePosition);
-            }
-        }
+        mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
 
         /*
         if (Input.GetKey(KeyCode.Q))
@@ -53,10 +45,4 @@ public class PlayerInputComponent : MonoBehaviour
         }
         */
     }
-
-    private void ThrustChange()
-    {
-        //shipMovementComponent.thrust = thrustSlider.value;
-    }
-
 }
