@@ -13,6 +13,11 @@ public class PlayerInputComponent : MonoBehaviour
     private Camera mainCamera;
     private ShipMovementComponent shipMovementComponent;
 
+    public void SetDestination(Vector2 destination)
+    {
+        shipMovementComponent.Destination = destination;
+    }
+
     private void Awake()
     {
         mainCamera = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<Camera>();

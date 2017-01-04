@@ -14,6 +14,7 @@ public class TurretComponent : MonoBehaviour
     public Texture2D crosshairSprite;
 
     private Rigidbody2D rootRigidbodyComponent;
+    private ShipReactorComponent m_shipReactorComponent;
 
     public void Fire()
     {
@@ -30,12 +31,14 @@ public class TurretComponent : MonoBehaviour
     private void Awake()
     {
         rootRigidbodyComponent = transform.parent.gameObject.GetComponent<Rigidbody2D>();
+        m_shipReactorComponent = transform.parent.gameObject.GetComponent<ShipReactorComponent>();
     }
 
     private void Update()
     {
         if (isActive)
         {
+            m_shipReactorComponent.UsePower(10.0f);
             //Cursor.SetCursor(crosshairSprite, Vector2.zero, CursorMode.Auto);
 
             float angleRad = Mathf.Atan2(targetPosition.y - transform.position.y, targetPosition.x - transform.position.x);

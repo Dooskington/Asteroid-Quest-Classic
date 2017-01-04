@@ -11,8 +11,10 @@ public class ShipMovementComponent : MonoBehaviour
     public float m_maxSpeed = 10.0f;
     public float m_rotationSpeed = 0.5f;
 
-    public GameObject m_mapBlipPrefab;
     public GameObject m_mapLinePrefab;
+
+    public delegate void DestinationChanged();
+    public event DestinationChanged OnDestinationChanged;
 
     public bool IsMoving { get; set; }
 
@@ -27,6 +29,11 @@ public class ShipMovementComponent : MonoBehaviour
         {
             m_destination = value;
             BeginMovement();
+
+            if (OnDestinationChanged != null)
+            {
+                OnDestinationChanged();
+            }
         }
     }
 
@@ -34,7 +41,7 @@ public class ShipMovementComponent : MonoBehaviour
     private Quaternion m_endRotation;
     private float m_moveStartTime;
 
-    private GameObject m_mapBlip;
+    private GameObject m_destinationBlip;
     private GameObject m_mapLine;
     private LineRenderer m_mapLineRenderer;
 
@@ -59,8 +66,6 @@ public class ShipMovementComponent : MonoBehaviour
         m_moveStartTime = Time.time;
 
         m_startRotation = transform.rotation;
-
-        CreateMapLine();
     }
 
     private void Awake()
@@ -101,8 +106,7 @@ public class ShipMovementComponent : MonoBehaviour
             m_rigidbodyComponent.AddForce(transform.right * (m_thrust * m_acceleration) * Time.deltaTime);
 
             float elapsedTime = Time.time - m_moveStartTime;
-            float rotationTime = distance / m_rotationSpeed;
-            float percentage = elapsedTime / rotationTime;
+            float percentage = elapsedTime / m_rotationSpeed;
 
             Vector2 direction = -((new Vector2(transform.position.x, transform.position.y) - Destination).normalized);
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -123,8 +127,8 @@ public class ShipMovementComponent : MonoBehaviour
                 IsMoving = false;
                 m_targetThrust = 0.0f;
 
-                Destroy(m_mapBlip);
-                Destroy(m_mapLine);
+                //Destroy(m_mapBlip);
+                //Destroy(m_mapLine);
             }
         }
         else
@@ -156,26 +160,5 @@ public class ShipMovementComponent : MonoBehaviour
         }
 
         return relativeAngles;
-    }
-
-    private void CreateMapLine()
-    {
-        if (m_mapLine)
-        {
-            DestroyImmediate(m_mapLine);
-        }
-
-        if (m_mapBlip)
-        {
-            DestroyImmediate(m_mapBlip);
-        }
-
-        m_mapBlip = Instantiate(m_mapBlipPrefab, new Vector3(Destination.x, Destination.y), Quaternion.identity) as GameObject;
-        m_mapLine = Instantiate(m_mapLinePrefab, Vector3.zero, Quaternion.identity) as GameObject;
-
-        m_mapLineRenderer = m_mapLine.GetComponent<LineRenderer>();
-        m_mapLineRenderer.SetPosition(0, transform.position);
-        m_mapLineRenderer.SetPosition(1, new Vector3(Destination.x, Destination.y, 0.0f));
-        m_mapLineRenderer.enabled = true;
     }
 }

@@ -6,12 +6,14 @@ using UnityEngine.EventSystems;
 
 public class MapUIComponent : MonoBehaviour, IPointerClickHandler
 {
+    public MapDataComponent mapData;
+    public float mapScale = 5.0f;
+
     public GameObject player;
     public RectTransform mapRect;
     public GameObject blipPrefab;
 
-    private ShipMovementComponent playerMovementComponent;
-    private Dictionary<Transform, Image> blips = new Dictionary<Transform, Image>();
+    private PlayerInputComponent playerComponent;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -20,38 +22,48 @@ public class MapUIComponent : MonoBehaviour, IPointerClickHandler
             Vector2 localPos;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(transform as RectTransform, eventData.position, null, out localPos);
 
-            Vector3 position = new Vector3(localPos.x, localPos.y, 0.0f);
-            playerMovementComponent.Destination = position;
+            playerComponent.SetDestination(localPos / mapScale);
         }
-    }
-
-    public void AddBlip(Transform blipTransform, Sprite blipSprite)
-    {
-        GameObject blipObject = Instantiate(blipPrefab, transform) as GameObject;
-        Image blipImage = blipObject.GetComponent<Image>();
-    
-        Vector2 screenPos = RectTransformUtility.WorldToScreenPoint(null, blipTransform.position);
-
-        blipImage.sprite = blipSprite;
-        blipImage.rectTransform.anchoredPosition = screenPos;
-
-        blips.Add(blipTransform, blipImage);
     }
 
     private void Awake()
     {
-        playerMovementComponent = player.GetComponent<ShipMovementComponent>();
+        mapData = FindObjectOfType<MapDataComponent>();
+        if (!mapData)
+        {
+            Debug.LogError(name + ": No MapData was provided!");
+        }
+
+        playerComponent = player.GetComponent<PlayerInputComponent>();
     }
 
     private void Update()
     {
-        foreach (Transform blipTransform in blips.Keys)
-        {
-            Image blipImage = blips[blipTransform];
+        UpdateBlips();
+    }
 
-            blipImage.rectTransform.anchoredPosition = RectTransformUtility.WorldToScreenPoint(null, blipTransform.position);
-            blipImage.rectTransform.rotation = blipTransform.rotation;
+    private void UpdateBlips()
+    {
+        foreach (MapBlipComponent blip in mapData.blipList)
+        {
+            if (blip.BlipUIImage == null)
+            {
+                CreateUIBlip(blip);
+            }
+
+            blip.BlipUIImage.rectTransform.anchoredPosition = RectTransformUtility.WorldToScreenPoint(null, blip.transform.position) * mapScale;
+            blip.BlipUIImage.rectTransform.rotation = blip.transform.rotation;
         }
+    }
+
+    private void CreateUIBlip(MapBlipComponent blip)
+    {
+        GameObject blipObject = Instantiate(blipPrefab, transform) as GameObject;
+        blipObject.name = blip.name;
+        blip.BlipUIImage = blipObject.GetComponent<Image>();
+        blip.BlipUIImage.sprite = blip.blipSprite;
+        blip.BlipUIImage.rectTransform.pivot = blip.blipPivot;
+        blip.BlipUIImage.rectTransform.localScale = new Vector2(1.0f, 1.0f) * blip.blipScale;
     }
 }
 
