@@ -32,7 +32,11 @@ public class MapBlipComponent : MonoBehaviour
     {
         if (mapData)
         {
-            Destroy(BlipUIImage.gameObject);
+            if (BlipUIImage)
+            {
+                Destroy(BlipUIImage.gameObject);
+            }
+
             mapData.blipList.Remove(this);
         }
     }

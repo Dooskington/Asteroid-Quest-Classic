@@ -13,7 +13,7 @@ public class MapUIComponent : MonoBehaviour, IPointerClickHandler
     public RectTransform mapRect;
     public GameObject blipPrefab;
 
-    private PlayerInputComponent playerComponent;
+    private PlayerControllerComponent playerComponent;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -34,7 +34,7 @@ public class MapUIComponent : MonoBehaviour, IPointerClickHandler
             Debug.LogError(name + ": No MapData was provided!");
         }
 
-        playerComponent = player.GetComponent<PlayerInputComponent>();
+        playerComponent = player.GetComponent<PlayerControllerComponent>();
     }
 
     private void Update()
