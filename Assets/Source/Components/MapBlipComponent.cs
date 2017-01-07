@@ -6,10 +6,12 @@ using UnityEngine.UI;
 public class MapBlipComponent : MonoBehaviour
 {
     public MapDataComponent mapData;
+    public string blipName;
     public Sprite blipSprite;
     public float blipScale = 1.0f;
     public Vector2 blipPivot = new Vector2(0.5f, 0.5f);
     public Image BlipUIImage { get; set; }
+    public Text BlipUIText { get; set; }
 
     private void Awake()
     {
@@ -35,6 +37,11 @@ public class MapBlipComponent : MonoBehaviour
             if (BlipUIImage)
             {
                 Destroy(BlipUIImage.gameObject);
+            }
+
+            if (BlipUIText)
+            {
+                Destroy(BlipUIText.gameObject);
             }
 
             mapData.blipList.Remove(this);

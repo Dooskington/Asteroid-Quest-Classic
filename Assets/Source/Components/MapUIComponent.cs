@@ -12,6 +12,7 @@ public class MapUIComponent : MonoBehaviour, IPointerClickHandler
     public GameObject player;
     public RectTransform mapRect;
     public GameObject blipPrefab;
+    public GameObject textPrefab;
 
     private PlayerControllerComponent playerComponent;
 
@@ -46,12 +47,24 @@ public class MapUIComponent : MonoBehaviour, IPointerClickHandler
     {
         foreach (MapBlipComponent blip in mapData.blipList)
         {
+            Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(null, blip.transform.position) * mapScale;
+
             if (blip.BlipUIImage == null)
             {
                 CreateUIBlip(blip);
             }
 
-            blip.BlipUIImage.rectTransform.anchoredPosition = RectTransformUtility.WorldToScreenPoint(null, blip.transform.position) * mapScale;
+            if ((blip.BlipUIText == null) && (blip.blipName.Length > 0))
+            {
+                CreateUIBlipText(blip);
+            }
+
+            if (blip.BlipUIText)
+            {
+                blip.BlipUIText.rectTransform.anchoredPosition = screenPoint + new Vector2(0.0f, 5.0f);
+            }
+
+            blip.BlipUIImage.rectTransform.anchoredPosition = screenPoint;
             blip.BlipUIImage.rectTransform.rotation = blip.transform.rotation;
         }
     }
@@ -64,6 +77,14 @@ public class MapUIComponent : MonoBehaviour, IPointerClickHandler
         blip.BlipUIImage.sprite = blip.blipSprite;
         blip.BlipUIImage.rectTransform.pivot = blip.blipPivot;
         blip.BlipUIImage.rectTransform.localScale = new Vector2(1.0f, 1.0f) * blip.blipScale;
+    }
+
+    private void CreateUIBlipText(MapBlipComponent blip)
+    {
+        GameObject textObject = Instantiate(textPrefab, transform) as GameObject;
+        textObject.name = blip.name + "_text";
+        blip.BlipUIText = textObject.GetComponent<Text>();
+        blip.BlipUIText.text = blip.blipName;
     }
 }
 
