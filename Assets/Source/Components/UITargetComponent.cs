@@ -41,7 +41,6 @@ public class UITargetComponent : MonoBehaviour
 
     private void Awake()
     {
-        gameObject.SetActive(false);
         m_playerComponent = FindObjectOfType<PlayerControllerComponent>();
     }
 }

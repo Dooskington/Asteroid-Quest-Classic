@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class MapUIComponent : MonoBehaviour, IPointerClickHandler
+public class UIMapComponent : MonoBehaviour, IPointerClickHandler
 {
     public MapDataComponent mapData;
     public float mapScale = 5.0f;

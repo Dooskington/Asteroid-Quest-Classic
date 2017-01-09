@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TurretStatusUIComponent : MonoBehaviour
+public class UITurretStatusComponent : MonoBehaviour
 {
     public TurretComponent turretComponent;
     public Color activeColor;

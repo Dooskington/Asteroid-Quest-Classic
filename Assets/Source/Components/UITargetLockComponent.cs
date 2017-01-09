@@ -42,7 +42,6 @@ public class UITargetLockComponent : MonoBehaviour
 
     private void Awake()
     {
-        gameObject.SetActive(false);
         playerComponent = FindObjectOfType<PlayerControllerComponent>();
     }
 }
