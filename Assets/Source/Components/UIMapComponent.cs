@@ -14,16 +14,12 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
     public GameObject blipPrefab;
     public GameObject textPrefab;
 
-    private PlayerControllerComponent playerComponent;
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (RectTransformUtility.RectangleContainsScreenPoint(mapRect, eventData.position))
         {
             Vector2 localPos;
             RectTransformUtility.ScreenPointToLocalPointInRectangle(transform as RectTransform, eventData.position, null, out localPos);
-
-            playerComponent.SetDestination(localPos / mapScale);
         }
     }
 
@@ -34,8 +30,6 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
         {
             Debug.LogError(name + ": No MapData was provided!");
         }
-
-        playerComponent = player.GetComponent<PlayerControllerComponent>();
     }
 
     private void Update()
@@ -61,7 +55,7 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
 
             if (blip.BlipUIText)
             {
-                blip.BlipUIText.rectTransform.anchoredPosition = screenPoint + new Vector2(0.0f, 5.0f);
+                blip.BlipUIText.rectTransform.anchoredPosition = screenPoint + new Vector2(0.0f, 2.5f);
             }
 
             blip.BlipUIImage.rectTransform.anchoredPosition = screenPoint;

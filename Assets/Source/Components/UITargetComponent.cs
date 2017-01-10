@@ -26,7 +26,7 @@ public class UITargetComponent : MonoBehaviour
 
     public void OnOrbitButtonClick()
     {
-        m_playerComponent.Orbit(target);
+        
     }
 
     public void OnTargetButtonClick()

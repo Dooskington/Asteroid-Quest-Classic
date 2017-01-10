@@ -14,16 +14,6 @@ public class PlayerControllerComponent : MonoBehaviour
     private RaycastHit2D mouseRayHit;
     private ShipMovementComponent m_shipMovementComponent;
 
-    public void SetDestination(Vector2 destination)
-    {
-        m_shipMovementComponent.Destination = destination;
-    }
-
-    public void Orbit(Transform target)
-    {
-        m_shipMovementComponent.OrbitTarget = target;
-    }
-
     public void Target(Transform target)
     {
         ShipTargetingComponent targeting = GetComponent<ShipTargetingComponent>();
@@ -69,18 +59,9 @@ public class PlayerControllerComponent : MonoBehaviour
     {
         if (!EventSystem.current.IsPointerOverGameObject())
         {
-            mouseRayHit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButton(0))
             {
-                if (mouseRayHit.collider)
-                {
-                    Target(mouseRayHit.collider.transform);
-                }
-                else
-                {
-                    Target(null);
-                }
+                turretComponent.Fire();
             }
         }
 
@@ -95,5 +76,7 @@ public class PlayerControllerComponent : MonoBehaviour
         {
             turretComponent.isActive = !turretComponent.isActive;
         }
+
+        turretComponent.target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 }
