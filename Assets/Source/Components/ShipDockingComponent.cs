@@ -6,8 +6,9 @@ using UnityEngine.UI;
 public class ShipDockingComponent : MonoBehaviour
 {
     public Text dockingIndicatorText;
-    public GameObject stationPanel;
+    public UIStationComponent stationPanel;
 
+    private GameObject currentDock;
     private ShipMovementComponent shipMovementComponent;
 
     private bool isDockable = false;
@@ -36,7 +37,6 @@ public class ShipDockingComponent : MonoBehaviour
         set
         {
             isDocked = value;
-            stationPanel.gameObject.SetActive(value);
         }
     }
 
@@ -46,12 +46,19 @@ public class ShipDockingComponent : MonoBehaviour
         IsDockable = false;
 
         shipMovementComponent.Halt();
+
+        StationControllerComponent stationControllerComponent = 
+            currentDock.transform.parent.gameObject.GetComponent<StationControllerComponent>();
+
+        stationPanel.Open(stationControllerComponent);
     }
 
     public void Undock()
     {
         IsDocked = false;
         IsDockable = true;
+
+        stationPanel.Close();
     }
 
     private void Awake()
@@ -76,6 +83,7 @@ public class ShipDockingComponent : MonoBehaviour
     {
         if (other.CompareTag("Dock"))
         {
+            currentDock = other.gameObject;
             IsDockable = true;
         }
     }
@@ -84,6 +92,7 @@ public class ShipDockingComponent : MonoBehaviour
     {
         if (other.CompareTag("Dock"))
         {
+            currentDock = null;
             IsDockable = false;
         }
     }
