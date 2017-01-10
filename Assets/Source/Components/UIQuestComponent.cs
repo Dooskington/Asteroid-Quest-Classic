@@ -12,7 +12,9 @@ public class UIQuestComponent : MonoBehaviour
     private void OnEnable()
     {
         playerQuestComponent = FindObjectOfType<PlayerQuestComponent>();
-
-        questText.text = "Deliver the cargo to " + playerQuestComponent.destination.stationName + ".";
+        if (playerQuestComponent)
+        {
+            questText.text = "Deliver the cargo to " + playerQuestComponent.destination.stationName + ".";
+        }
     }
 }
