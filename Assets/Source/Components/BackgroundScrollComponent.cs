@@ -16,6 +16,7 @@ public class BackgroundScrollComponent : MonoBehaviour
         {
             GameObject bg = backgrounds[i];
             float speed = speeds[i];
+
             bg.GetComponent<Renderer>().material.SetTextureOffset("_MainTex", new Vector2(transform.position.x * speed, transform.position.y * speed));
         }
     }
