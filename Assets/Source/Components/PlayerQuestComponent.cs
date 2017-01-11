@@ -8,14 +8,11 @@ public class PlayerQuestComponent : MonoBehaviour
     public UINewQuestComponent newQuestPanel;
     public Vector3 startLocation;
     public StationControllerComponent destinationStation;
-    public AudioEvent questCompleteAudio;
 
     private PlayerControllerComponent playerControllerComponent;
 
     public void CompleteQuest()
     {
-        questCompleteAudio.Play(transform.position);
-
         playerControllerComponent.score++;
 
         int reward = (int) (Mathf.Ceil(Vector3.Distance(startLocation, destinationStation.transform.position)) * 5);

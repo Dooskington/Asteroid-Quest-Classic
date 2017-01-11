@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UIQuestCompleteComponent : MonoBehaviour
 {
+    public AudioEvent openAudio;
     public float lengthTime = 1.5f;
     public Text rewardText;
 
@@ -15,6 +16,8 @@ public class UIQuestCompleteComponent : MonoBehaviour
 
     public void Open(int rewardAmount)
     {
+        openAudio.Play(transform.position);
+
         isClosing = false;
         openTime = Time.time;
         rewardText.text = rewardAmount.ToString();

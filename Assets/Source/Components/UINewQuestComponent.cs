@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class UINewQuestComponent : MonoBehaviour
 {
+    public AudioEvent openAudio;
     public float lengthTime = 1.5f;
     public Text questText;
 
@@ -15,6 +16,8 @@ public class UINewQuestComponent : MonoBehaviour
 
     public void Open(PlayerQuestComponent playerQuestComponent)
     {
+        openAudio.Play(transform.position);
+
         isClosing = false;
         openTime = Time.time;
         questText.text = playerQuestComponent.destinationStation.stationName;
