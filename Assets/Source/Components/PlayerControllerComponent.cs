@@ -7,12 +7,32 @@ using UnityEngine.UI;
 public class PlayerControllerComponent : MonoBehaviour
 {
     public GameObject mapPanel;
+    public GameObject statsPanel;
+    public GameObject questPanel;
     public UITargetComponent infoPanel;
     public Slider thrustSlider;
     public TurretComponent turretComponent;
+    public int credits;
+    public int score;
 
     private RaycastHit2D mouseRayHit;
     private ShipMovementComponent m_shipMovementComponent;
+
+    public void AddCredits(int amount)
+    {
+        credits += amount;
+    }
+
+    public bool TakeCredits(int amount)
+    {
+        if ((credits - amount) < 0)
+        {
+            return false;
+        }
+
+        credits -= amount;
+        return true;
+    }
 
     public void Target(Transform target)
     {
@@ -71,6 +91,8 @@ public class PlayerControllerComponent : MonoBehaviour
         }
 
         mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
+        statsPanel.SetActive(Input.GetKey(KeyCode.Tab));
+        questPanel.SetActive(Input.GetKey(KeyCode.Tab));
 
         if (Input.GetKeyDown(KeyCode.Q))
         {

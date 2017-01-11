@@ -55,7 +55,7 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
 
             if (blip.BlipUIText)
             {
-                blip.BlipUIText.rectTransform.anchoredPosition = screenPoint + new Vector2(0.0f, 2.5f);
+                blip.BlipUIText.rectTransform.anchoredPosition = screenPoint + new Vector2(0.0f, 3.5f);
             }
 
             blip.BlipUIImage.rectTransform.anchoredPosition = screenPoint;

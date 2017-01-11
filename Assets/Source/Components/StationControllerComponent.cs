@@ -5,9 +5,4 @@ using UnityEngine;
 public class StationControllerComponent : MonoBehaviour
 {
     public string stationName = "Station";
-
-    private void OnDeliverClick()
-    {
-
-    }
 }

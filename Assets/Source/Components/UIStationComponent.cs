@@ -9,16 +9,13 @@ public class UIStationComponent : MonoBehaviour
     public Button deliverButton;
 
     private PlayerQuestComponent playerQuestComponent;
-    private StationControllerComponent stationControllerComponent;
 
     public void Open(StationControllerComponent stationControllerComponent)
     {
-        this.stationControllerComponent = stationControllerComponent;
-
         title.text = stationControllerComponent.stationName;
 
         playerQuestComponent = FindObjectOfType<PlayerQuestComponent>();
-        if (playerQuestComponent.destination == stationControllerComponent)
+        if (playerQuestComponent.destinationStation == stationControllerComponent)
         {
             deliverButton.gameObject.SetActive(true);
         }
