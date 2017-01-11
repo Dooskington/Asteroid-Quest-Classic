@@ -16,7 +16,8 @@ public class PlayerControllerComponent : MonoBehaviour
     public int score;
 
     private RaycastHit2D mouseRayHit;
-    private ShipMovementComponent m_shipMovementComponent;
+    private ShipMovementComponent shipMovementComponent;
+    private ShipReactorComponent shipReactor;
 
     public void AddCredits(int amount)
     {
@@ -32,6 +33,21 @@ public class PlayerControllerComponent : MonoBehaviour
 
         credits -= amount;
         return true;
+    }
+
+    public void Recharge()
+    {
+        shipReactor.coreHealth = shipReactor.maxCoreHealth;
+    }
+
+    public void Repair()
+    {
+
+    }
+
+    public void Feed()
+    {
+
     }
 
     public void Target(Transform target)
@@ -72,7 +88,8 @@ public class PlayerControllerComponent : MonoBehaviour
 
     private void Awake()
     {
-        m_shipMovementComponent = GetComponent<ShipMovementComponent>();
+        shipMovementComponent = GetComponent<ShipMovementComponent>();
+        shipReactor = GetComponent<ShipReactorComponent>();
     }
 
     private void Update()
@@ -85,7 +102,7 @@ public class PlayerControllerComponent : MonoBehaviour
             }
         }
 
-        thrustSlider.value = m_shipMovementComponent.m_thrust;
+        thrustSlider.value = shipMovementComponent.m_thrust;
 
         mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
         statsPanel.SetActive(Input.GetKey(KeyCode.Tab));

@@ -38,6 +38,7 @@ public class PlayerQuestComponent : MonoBehaviour
 
         int rand = Random.Range(0, stations.Count);
         destinationStation = stations[rand];
+        startLocation = transform.position;
     }
 
     private void Awake()

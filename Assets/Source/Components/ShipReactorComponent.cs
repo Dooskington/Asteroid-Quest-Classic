@@ -33,6 +33,9 @@ public class ShipReactorComponent : MonoBehaviour
 
     private void UpdateUI()
     {
+        coreHealthSlider.maxValue = maxCoreHealth;
+        coreUsageSlider.maxValue = maxCoreUsage;
+
         coreHealthSlider.value = Mathf.Lerp(coreHealthSlider.value, coreHealth, Time.deltaTime);
         coreUsageSlider.value = Mathf.Lerp(coreUsageSlider.value, coreUsage, Time.deltaTime);
     }
