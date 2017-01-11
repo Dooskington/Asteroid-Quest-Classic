@@ -36,7 +36,7 @@ public class ShipReactorComponent : MonoBehaviour
         coreHealthSlider.maxValue = maxCoreHealth;
         coreUsageSlider.maxValue = maxCoreUsage;
 
-        coreHealthSlider.value = Mathf.Lerp(coreHealthSlider.value, coreHealth, Time.deltaTime);
-        coreUsageSlider.value = Mathf.Lerp(coreUsageSlider.value, coreUsage, Time.deltaTime);
+        coreHealthSlider.value = Mathf.Lerp(coreHealthSlider.value, coreHealth, 2.5f * Time.deltaTime);
+        coreUsageSlider.value = Mathf.Lerp(coreUsageSlider.value, coreUsage, 2.5f * Time.deltaTime);
     }
 }

@@ -18,6 +18,7 @@ public class PlayerControllerComponent : MonoBehaviour
     private RaycastHit2D mouseRayHit;
     private ShipMovementComponent shipMovementComponent;
     private ShipReactorComponent shipReactor;
+    private ShipCrewComponent shipCrew;
 
     public void AddCredits(int amount)
     {
@@ -47,7 +48,7 @@ public class PlayerControllerComponent : MonoBehaviour
 
     public void Feed()
     {
-
+        shipCrew.Feed();
     }
 
     public void Target(Transform target)
@@ -90,6 +91,7 @@ public class PlayerControllerComponent : MonoBehaviour
     {
         shipMovementComponent = GetComponent<ShipMovementComponent>();
         shipReactor = GetComponent<ShipReactorComponent>();
+        shipCrew = GetComponent<ShipCrewComponent>();
     }
 
     private void Update()
@@ -102,7 +104,7 @@ public class PlayerControllerComponent : MonoBehaviour
             }
         }
 
-        thrustSlider.value = shipMovementComponent.m_thrust;
+        thrustSlider.value = Mathf.Lerp(thrustSlider.value, shipMovementComponent.thrust, 2.5f * Time.deltaTime);
 
         mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
         statsPanel.SetActive(Input.GetKey(KeyCode.Tab));
