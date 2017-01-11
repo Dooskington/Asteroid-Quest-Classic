@@ -85,10 +85,7 @@ public class PlayerControllerComponent : MonoBehaviour
             }
         }
 
-        if (m_shipMovementComponent.m_thrust != thrustSlider.value)
-        {
-            thrustSlider.value = m_shipMovementComponent.m_thrust;
-        }
+        thrustSlider.value = m_shipMovementComponent.m_thrust;
 
         mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
         statsPanel.SetActive(Input.GetKey(KeyCode.Tab));
