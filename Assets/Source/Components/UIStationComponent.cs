@@ -33,9 +33,13 @@ public class UIStationComponent : MonoBehaviour
         shipDefense = player.GetComponent<ShipDefenseComponent>();
         shipCrew = player.GetComponent<ShipCrewComponent>();
 
-        rechargeCost = (int) (1 + (shipReactor.maxCoreHealth - shipReactor.coreHealth)) * 5;
-        repairCost = (int) (1 + (shipDefense.maxHull - shipDefense.hull)) * 5;
-        feedCost = (1 + (shipCrew.maxHunger - shipCrew.hunger)) * 5;
+        rechargeCost = (int) Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 5);
+        repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 5);
+        feedCost = (shipCrew.maxHunger - shipCrew.hunger) * 5;
+
+        rechargeButton.interactable = player.HasCredits(rechargeCost);
+        repairButton.interactable = player.HasCredits(repairCost);
+        feedButton.interactable = player.HasCredits(feedCost);
 
         rechargeCostText.text = rechargeCost.ToString();
         repairCostText.text = repairCost.ToString();
@@ -44,6 +48,33 @@ public class UIStationComponent : MonoBehaviour
         rechargeCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
         repairCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
         feedCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
+
+        if (rechargeCost <= 0)
+        {
+            rechargeButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            rechargeButton.gameObject.SetActive(true);
+        }
+
+        if (repairCost <= 0)
+        {
+            repairButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            repairButton.gameObject.SetActive(true);
+        }
+
+        if (feedCost <= 0)
+        {
+            feedButton.gameObject.SetActive(false);
+        }
+        else
+        {
+            feedButton.gameObject.SetActive(true);
+        }
 
         title.text = stationControllerComponent.stationName;
 
