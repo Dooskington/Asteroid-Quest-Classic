@@ -27,7 +27,7 @@ public class PlayerControllerComponent : MonoBehaviour
 
     public bool TakeCredits(int amount)
     {
-        if ((credits - amount) < 0)
+        if (!HasCredits(amount))
         {
             return false;
         }
@@ -36,14 +36,14 @@ public class PlayerControllerComponent : MonoBehaviour
         return true;
     }
 
+    public bool HasCredits(int amount)
+    {
+        return (credits >= amount);
+    }
+
     public void Recharge()
     {
         shipReactor.coreHealth = shipReactor.maxCoreHealth;
-    }
-
-    public void Repair()
-    {
-
     }
 
     public void Feed()
