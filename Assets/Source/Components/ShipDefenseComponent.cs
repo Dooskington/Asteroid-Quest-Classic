@@ -15,7 +15,6 @@ public class ShipDefenseComponent : MonoBehaviour
     public Slider shieldSlider;
     public AudioEvent crashAudio;
     public AudioEvent deathAudio;
-    public GameObject playerUI;
 
     private float lastRechargeTime;
     private float lastSpeed;
@@ -54,7 +53,6 @@ public class ShipDefenseComponent : MonoBehaviour
         if (hull <= 0)
         {
             deathAudio.Play(transform.position);
-            playerUI.SetActive(false);
             Destroy(gameObject);
         }
     }
