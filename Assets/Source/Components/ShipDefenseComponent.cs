@@ -13,8 +13,13 @@ public class ShipDefenseComponent : MonoBehaviour
     public float rechargeAmount = 5.0f;
     public Slider hullSlider;
     public Slider shieldSlider;
+    public AudioEvent crashAudio;
+    public AudioEvent deathAudio;
+    public GameObject playerUI;
 
     private float lastRechargeTime;
+    private float lastSpeed;
+    private Rigidbody2D shipRigidbody;
 
     public void Repair()
     {
@@ -23,6 +28,8 @@ public class ShipDefenseComponent : MonoBehaviour
 
     private void Awake()
     {
+        shipRigidbody = GetComponent<Rigidbody2D>();
+
         hullSlider.maxValue = maxHull;
         hullSlider.value = hull;
 
@@ -32,15 +39,24 @@ public class ShipDefenseComponent : MonoBehaviour
 
     private void Update()
     {
+        lastSpeed = shipRigidbody.velocity.magnitude;
+
         if ((Time.time - lastRechargeTime) >= rechargeFrequency)
         {
             Recharge();
         }
 
-        hull = Mathf.Clamp(hull, 0, maxHull);
-        shield = Mathf.Clamp(shield, 0, maxShield);
+        hull = Mathf.Clamp(hull, 0.0f, maxHull);
+        shield = Mathf.Clamp(shield, 0.0f, maxShield);
 
         UpdateUI();
+
+        if (hull <= 0)
+        {
+            deathAudio.Play(transform.position);
+            playerUI.SetActive(false);
+            Destroy(gameObject);
+        }
     }
 
     private void UpdateUI()
@@ -56,5 +72,16 @@ public class ShipDefenseComponent : MonoBehaviour
     {
         lastRechargeTime = Time.time;
         shield += rechargeAmount;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (lastSpeed < 1.5f)
+        {
+            return;
+        }
+
+        hull -= 10.0f * lastSpeed;
+        crashAudio.Play(transform.position);
     }
 }

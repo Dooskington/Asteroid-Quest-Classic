@@ -10,6 +10,11 @@ public class BackgroundScrollComponent : MonoBehaviour
 
     private void Update()
     {
+        if (!playerObject)
+        {
+            return;
+        }
+
         transform.position = playerObject.transform.position;
 
         for (int i = 0; i < backgrounds.Length; i++)

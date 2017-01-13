@@ -20,6 +20,7 @@ public class UIStationComponent : MonoBehaviour
     private int repairCost;
     private int feedCost;
 
+    private StationControllerComponent station;
     private PlayerControllerComponent player;
     private ShipReactorComponent shipReactor;
     private ShipDefenseComponent shipDefense;
@@ -28,12 +29,75 @@ public class UIStationComponent : MonoBehaviour
 
     public void Open(StationControllerComponent stationControllerComponent)
     {
+        station = stationControllerComponent;
+
         player = FindObjectOfType<PlayerControllerComponent>();
         shipReactor = player.GetComponent<ShipReactorComponent>();
         shipDefense = player.GetComponent<ShipDefenseComponent>();
         shipCrew = player.GetComponent<ShipCrewComponent>();
 
-        rechargeCost = (int) Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 5);
+        ConstructUI();
+
+        gameObject.SetActive(true);
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+    }
+
+    public void OnRechargeClick()
+    {
+        if (!player.TakeCredits(rechargeCost))
+        {
+            buyFailureAudio.Play();
+            return;
+        }
+
+        buySuccessAudio.Play();
+        player.Recharge();
+
+        ConstructUI();
+    }
+
+    public void OnRepairClick()
+    {
+        if (!player.TakeCredits(repairCost))
+        {
+            buyFailureAudio.Play();
+            return;
+        }
+
+        buySuccessAudio.Play();
+        shipDefense.Repair();
+
+        ConstructUI();
+    }
+
+    public void OnFeedClick()
+    {
+        if (!player.TakeCredits(feedCost))
+        {
+            buyFailureAudio.Play();
+            return;
+        }
+
+        buySuccessAudio.Play();
+        player.Feed();
+
+        ConstructUI();
+    }
+
+    public void OnDeliverClick()
+    {
+        playerQuest.CompleteQuest();
+
+        ConstructUI();
+    }
+
+    private void ConstructUI()
+    {
+        rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 5);
         repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 5);
         feedCost = (shipCrew.maxHunger - shipCrew.hunger) * 5;
 
@@ -49,6 +113,7 @@ public class UIStationComponent : MonoBehaviour
         repairCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
         feedCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
 
+        /*
         if (rechargeCost <= 0)
         {
             rechargeButton.gameObject.SetActive(false);
@@ -75,11 +140,12 @@ public class UIStationComponent : MonoBehaviour
         {
             feedButton.gameObject.SetActive(true);
         }
+        */
 
-        title.text = stationControllerComponent.stationName;
+        title.text = station.stationName;
 
         playerQuest = player.GetComponent<PlayerQuestComponent>();
-        if (playerQuest.destinationStation == stationControllerComponent)
+        if (playerQuest.destinationStation == station)
         {
             deliverButton.gameObject.SetActive(true);
         }
@@ -87,54 +153,5 @@ public class UIStationComponent : MonoBehaviour
         {
             deliverButton.gameObject.SetActive(false);
         }
-
-        gameObject.SetActive(true);
-    }
-
-    public void Close()
-    {
-        gameObject.SetActive(false);
-    }
-
-    public void OnRechargeClick()
-    {
-        if (!player.TakeCredits(rechargeCost))
-        {
-            buyFailureAudio.Play();
-            return;
-        }
-
-        buySuccessAudio.Play();
-        player.Recharge();
-    }
-
-    public void OnRepairClick()
-    {
-        if (!player.TakeCredits(repairCost))
-        {
-            buyFailureAudio.Play();
-            return;
-        }
-
-        buySuccessAudio.Play();
-        shipDefense.Repair();
-    }
-
-    public void OnFeedClick()
-    {
-        if (!player.TakeCredits(feedCost))
-        {
-            buyFailureAudio.Play();
-            return;
-        }
-
-        buySuccessAudio.Play();
-        player.Feed();
-    }
-
-    public void OnDeliverClick()
-    {
-        deliverButton.gameObject.SetActive(false);
-        playerQuest.CompleteQuest();
     }
 }
