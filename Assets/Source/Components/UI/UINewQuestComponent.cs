@@ -14,13 +14,13 @@ public class UINewQuestComponent : MonoBehaviour
 
     private Animator animator;
 
-    public void Open(PlayerQuestComponent playerQuestComponent)
+    public void Open(Quest quest)
     {
         openAudio.Play(transform.position);
 
         isClosing = false;
         openTime = Time.time;
-        questText.text = playerQuestComponent.destinationStation.stationName;
+        questText.text = quest.endStation.stationName;
 
         animator.SetBool("isOpen", true);
     }

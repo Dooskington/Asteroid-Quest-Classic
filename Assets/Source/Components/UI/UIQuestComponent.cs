@@ -14,7 +14,14 @@ public class UIQuestComponent : MonoBehaviour
         playerQuestComponent = FindObjectOfType<PlayerQuestComponent>();
         if (playerQuestComponent)
         {
-            questText.text = playerQuestComponent.destinationStation.stationName;
+            if (playerQuestComponent.quest != null)
+            {
+                questText.text = playerQuestComponent.quest.endStation.stationName;
+            }
+            else
+            {
+                questText.text = "No delivery!";
+            }
         }
     }
 }

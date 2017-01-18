@@ -6,51 +6,28 @@ public class PlayerQuestComponent : MonoBehaviour
 {
     public UIQuestCompleteComponent questCompletePanel;
     public UINewQuestComponent newQuestPanel;
-    public Vector3 startLocation;
-    public StationControllerComponent destinationStation;
+    public Quest quest;
 
-    private PlayerControllerComponent playerControllerComponent;
+    private PlayerControllerComponent player;
+
+    public void BeginQuest(Quest quest)
+    {
+        this.quest = quest;
+        newQuestPanel.Open(quest);
+    }
 
     public void CompleteQuest()
     {
-        playerControllerComponent.score++;
+        player.score++;
+        player.AddCredits(quest.rewardCredits);
 
-        int reward = (int) (Mathf.Ceil(Vector3.Distance(startLocation, destinationStation.transform.position)) * 5);
-        reward += (Random.Range(0, 10) * 5);
+        questCompletePanel.Open(quest.rewardCredits);
 
-        playerControllerComponent.AddCredits(reward);
-
-        questCompletePanel.Open(reward);
-        Invoke("OpenNewQuestPanel", questCompletePanel.lengthTime + 0.5f);
-
-        GenerateQuest();
-    }
-
-    public void GenerateQuest()
-    {
-        List<StationControllerComponent> stations = 
-            new List<StationControllerComponent>(FindObjectsOfType<StationControllerComponent>());
-
-        if (destinationStation)
-        {
-            stations.Remove(destinationStation);
-        }
-
-        int rand = Random.Range(0, stations.Count);
-        destinationStation = stations[rand];
-        startLocation = transform.position;
+        quest = null;
     }
 
     private void Awake()
     {
-        playerControllerComponent = GetComponent<PlayerControllerComponent>();
-        startLocation = transform.position;
-
-        GenerateQuest();
-    }
-
-    private void OpenNewQuestPanel()
-    {
-        newQuestPanel.Open(this);
+        player = GetComponent<PlayerControllerComponent>();
     }
 }

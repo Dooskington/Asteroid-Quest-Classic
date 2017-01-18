@@ -15,6 +15,10 @@ public class UIStationComponent : MonoBehaviour
     public Button deliverButton;
     public AudioEvent buySuccessAudio;
     public AudioEvent buyFailureAudio;
+    public GameObject questPanel;
+    public GameObject questContentPanel;
+
+    public GameObject questButtonPrefab;
 
     private int rechargeCost;
     private int repairCost;
@@ -32,6 +36,7 @@ public class UIStationComponent : MonoBehaviour
         station = stationControllerComponent;
 
         player = FindObjectOfType<PlayerControllerComponent>();
+        playerQuest = player.GetComponent<PlayerQuestComponent>();
         shipReactor = player.GetComponent<ShipReactorComponent>();
         shipDefense = player.GetComponent<ShipDefenseComponent>();
         shipCrew = player.GetComponent<ShipCrewComponent>();
@@ -90,13 +95,22 @@ public class UIStationComponent : MonoBehaviour
 
     public void OnDeliverClick()
     {
+        buySuccessAudio.Play();
         playerQuest.CompleteQuest();
+        ConstructUI();
+    }
 
+    public void OnQuestClick(Quest quest)
+    {
+        buySuccessAudio.Play();
+        playerQuest.BeginQuest(quest);
         ConstructUI();
     }
 
     private void ConstructUI()
     {
+        title.text = station.stationName;
+
         rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 5);
         repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 5);
         feedCost = (shipCrew.maxHunger - shipCrew.hunger) * 5;
@@ -142,16 +156,39 @@ public class UIStationComponent : MonoBehaviour
         }
         */
 
-        title.text = station.stationName;
-
-        playerQuest = player.GetComponent<PlayerQuestComponent>();
-        if (playerQuest.destinationStation == station)
+        if (playerQuest.quest == null)
         {
-            deliverButton.gameObject.SetActive(true);
+            foreach (Transform child in questContentPanel.transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            foreach (Quest quest in station.Quests)
+            {
+                GameObject buttonObject = Instantiate(questButtonPrefab, questContentPanel.transform) as GameObject;
+                UIStationQuestButton questButton = buttonObject.GetComponent<UIStationQuestButton>();
+
+                questButton.Setup(quest, this);
+            }
+
+            questPanel.SetActive(true);
+            deliverButton.gameObject.SetActive(false);
+            questPanel.GetComponent<ContentSizeFitter>().SetLayoutVertical();
+            questContentPanel.GetComponent<ContentSizeFitter>().SetLayoutVertical();
         }
         else
         {
-            deliverButton.gameObject.SetActive(false);
+            questPanel.SetActive(false);
+
+            if (playerQuest.quest.endStation == station)
+            {
+                deliverButton.gameObject.SetActive(true);
+            }
+            else
+            {
+                deliverButton.gameObject.SetActive(false);
+            }
         }
     }
+
 }
