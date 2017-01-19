@@ -148,7 +148,8 @@ public class UIStationComponent : MonoBehaviour
 
             foreach (Quest quest in station.Quests)
             {
-                GameObject buttonObject = Instantiate(questButtonPrefab, questContentPanel.transform) as GameObject;
+                GameObject buttonObject = Instantiate(questButtonPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+                buttonObject.transform.SetParent(questContentPanel.transform, false);
                 UIStationQuestButton questButton = buttonObject.GetComponent<UIStationQuestButton>();
 
                 questButton.Setup(quest, this);
@@ -156,8 +157,10 @@ public class UIStationComponent : MonoBehaviour
 
             questPanel.SetActive(true);
             deliverButton.gameObject.SetActive(false);
+
             questPanel.GetComponent<ContentSizeFitter>().SetLayoutVertical();
             questContentPanel.GetComponent<ContentSizeFitter>().SetLayoutVertical();
+            questContentPanel.GetComponent<VerticalLayoutGroup>().SetLayoutVertical();
         }
         else
         {
