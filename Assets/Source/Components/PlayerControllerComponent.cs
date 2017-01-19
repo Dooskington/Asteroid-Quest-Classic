@@ -122,7 +122,6 @@ public class PlayerControllerComponent : MonoBehaviour
             turretComponent.isActive = !turretComponent.isActive;
         }
 
-
         if (Input.GetKeyDown(KeyCode.W))
         {
             shipMovementComponent.IncreaseThrust();

@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class StationControllerComponent : MonoBehaviour
 {
+    private const int questCount = 3;
+
     public string stationName = "Station";
-    public int questCount = 3;
     public List<Quest> Quests { get; set; }
 
     private void Awake()
