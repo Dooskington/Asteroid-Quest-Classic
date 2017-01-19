@@ -19,6 +19,7 @@ public class PlayerControllerComponent : MonoBehaviour
     private ShipMovementComponent shipMovementComponent;
     private ShipReactorComponent shipReactor;
     private ShipCrewComponent shipCrew;
+    private ShipDockingComponent shipDocking;
 
     public void AddCredits(int amount)
     {
@@ -92,6 +93,7 @@ public class PlayerControllerComponent : MonoBehaviour
         shipMovementComponent = GetComponent<ShipMovementComponent>();
         shipReactor = GetComponent<ShipReactorComponent>();
         shipCrew = GetComponent<ShipCrewComponent>();
+        shipDocking = GetComponent<ShipDockingComponent>();
     }
 
     private void Update()
@@ -106,6 +108,11 @@ public class PlayerControllerComponent : MonoBehaviour
 
         thrustSlider.value = Mathf.Lerp(thrustSlider.value, shipMovementComponent.thrust, 2.5f * Time.deltaTime);
 
+        if (shipDocking.IsDocked)
+        {
+            return;
+        }
+
         mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
         statsPanel.SetActive(Input.GetKey(KeyCode.Tab));
         questPanel.SetActive(Input.GetKey(KeyCode.Tab));
@@ -113,6 +120,25 @@ public class PlayerControllerComponent : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             turretComponent.isActive = !turretComponent.isActive;
+        }
+
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            shipMovementComponent.IncreaseThrust();
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            shipMovementComponent.DecreaseThrust();
+        }
+
+        if (Input.GetKey(KeyCode.A))
+        {
+            shipMovementComponent.TurnLeft();
+        }
+        else if (Input.GetKey(KeyCode.D))
+        {
+            shipMovementComponent.TurnRight();
         }
 
         turretComponent.target = Camera.main.ScreenToWorldPoint(Input.mousePosition);

@@ -24,6 +24,26 @@ public class ShipMovementComponent : MonoBehaviour
         rigidbodyComponent.angularVelocity = 0.0f;
     }
 
+    public void IncreaseThrust()
+    {
+        targetThrust += 0.35f;
+    }
+
+    public void DecreaseThrust()
+    {
+        targetThrust -= 0.35f;
+    }
+
+    public void TurnLeft()
+    {
+        transform.Rotate(Vector3.forward, (thrust * rotationSpeed) * Time.deltaTime);
+    }
+
+    public void TurnRight()
+    {
+        transform.Rotate(-Vector3.forward, (thrust * rotationSpeed) * Time.deltaTime);
+    }
+
     private void Awake()
     {
         rigidbodyComponent = GetComponent<Rigidbody2D>();
@@ -46,25 +66,6 @@ public class ShipMovementComponent : MonoBehaviour
         }
 
         shipReactor.UsePower(thrust * powerUsage);
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            targetThrust += 0.35f;
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            targetThrust -= 0.35f;
-        }
-
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.Rotate(Vector3.forward, (thrust * rotationSpeed) * Time.deltaTime);
-        }
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.Rotate(-Vector3.forward, (thrust * rotationSpeed) * Time.deltaTime);
-        }
     }
 
     private void FixedUpdate()

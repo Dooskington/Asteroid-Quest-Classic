@@ -7,12 +7,16 @@ public class UIStationComponent : MonoBehaviour
 {
     public Text title;
     public Button rechargeButton;
+    public GameObject rechargeCostObject;
     public Text rechargeCostText;
     public Button repairButton;
+    public GameObject repairCostObject;
     public Text repairCostText;
     public Button feedButton;
+    public GameObject feedCostObject;
     public Text feedCostText;
     public Button deliverButton;
+
     public AudioEvent buySuccessAudio;
     public AudioEvent buyFailureAudio;
     public GameObject questPanel;
@@ -127,34 +131,13 @@ public class UIStationComponent : MonoBehaviour
         repairCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
         feedCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
 
-        /*
-        if (rechargeCost <= 0)
-        {
-            rechargeButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            rechargeButton.gameObject.SetActive(true);
-        }
+        rechargeButton.enabled = (rechargeCost > 0);
+        repairButton.enabled = (repairCost > 0);
+        feedButton.enabled = (feedCost > 0);
 
-        if (repairCost <= 0)
-        {
-            repairButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            repairButton.gameObject.SetActive(true);
-        }
-
-        if (feedCost <= 0)
-        {
-            feedButton.gameObject.SetActive(false);
-        }
-        else
-        {
-            feedButton.gameObject.SetActive(true);
-        }
-        */
+        rechargeCostObject.SetActive(rechargeCost > 0);
+        repairCostObject.SetActive(repairCost > 0);
+        feedCostObject.SetActive(feedCost > 0);
 
         if (playerQuest.quest == null)
         {

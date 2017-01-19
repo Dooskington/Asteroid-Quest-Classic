@@ -13,14 +13,26 @@ public class ShipCrewComponent : MonoBehaviour
 
     private float lastHungerTime;
 
+    private ShipDockingComponent shipDocking;
+
     public void Feed()
     {
         lastHungerTime = Time.time;
         hunger = maxHunger;
     }
 
+    private void Awake()
+    {
+        shipDocking = GetComponent<ShipDockingComponent>();
+    }
+
     private void Update()
     {
+        if (shipDocking.IsDocked)
+        {
+            return;
+        }
+
         if ((Time.time - lastHungerTime) >= hungerFrequency)
         {
             AddHunger();

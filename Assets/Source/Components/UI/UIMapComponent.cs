@@ -59,7 +59,10 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
             }
 
             blip.BlipUIImage.rectTransform.anchoredPosition = screenPoint;
-            blip.BlipUIImage.rectTransform.rotation = blip.transform.rotation;
+            if (blip.rotate)
+            {
+                blip.BlipUIImage.rectTransform.rotation = blip.transform.rotation;
+            }
         }
     }
 

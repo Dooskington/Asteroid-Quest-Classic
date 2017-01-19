@@ -12,6 +12,7 @@ public class MapBlipComponent : MonoBehaviour
     public Vector2 blipPivot = new Vector2(0.5f, 0.5f);
     public Image BlipUIImage { get; set; }
     public Text BlipUIText { get; set; }
+    public bool rotate = false;
 
     private void Awake()
     {
