@@ -70,7 +70,7 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
         blip.BlipUIImage = blipObject.GetComponent<Image>();
         blip.BlipUIImage.sprite = blip.blipSprite;
         blip.BlipUIImage.rectTransform.pivot = blip.blipPivot;
-        blip.BlipUIImage.rectTransform.localScale = new Vector2(1.0f, 1.0f) * blip.blipScale;
+        blip.BlipUIImage.rectTransform.localScale = new Vector3(1.0f * blip.blipScale, 1.0f * blip.blipScale , 1.0f);
     }
 
     private void CreateUIBlipText(MapBlipComponent blip)
