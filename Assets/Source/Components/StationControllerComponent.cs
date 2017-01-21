@@ -6,31 +6,34 @@ public class StationControllerComponent : MonoBehaviour
 {
     private const int questCount = 3;
 
-    public string stationName = "Station";
+    public string StationName { get; set; }
     public List<Quest> Quests { get; set; }
 
     private void Awake()
     {
-        Quests = GenerateQuests(questCount);
+        StationDataComponent stationData = FindObjectOfType<StationDataComponent>();
+        StationName = stationData.TakeName();
+
+        GetComponent<MapBlipComponent>().blipName = StationName;
+
+        GenerateQuests();
     }
 
-    private List<Quest> GenerateQuests(int count)
+    public void GenerateQuests()
     {
-        List<Quest> quests = new List<Quest>();
+        Quests = new List<Quest>();
 
         List<StationControllerComponent> stations =
             new List<StationControllerComponent>(FindObjectsOfType<StationControllerComponent>());
 
         stations.Remove(this);
 
-        for (int i = 0; i < count; i++)
+        for (int i = 0; i < questCount; i++)
         {
             StationControllerComponent endStation = stations[Random.Range(0, stations.Count)];
             stations.Remove(endStation);
 
-            quests.Add(new Quest(this, endStation));
+            Quests.Add(new Quest(this, endStation));
         }
-
-        return quests;
     }
 }

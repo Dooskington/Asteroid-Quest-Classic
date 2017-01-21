@@ -20,7 +20,7 @@ public class UINewQuestComponent : MonoBehaviour
 
         isClosing = false;
         openTime = Time.time;
-        questText.text = quest.endStation.stationName;
+        questText.text = quest.endStation.StationName;
 
         animator.SetBool("isOpen", true);
     }

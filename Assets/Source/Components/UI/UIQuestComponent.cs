@@ -16,7 +16,7 @@ public class UIQuestComponent : MonoBehaviour
         {
             if (playerQuestComponent.quest != null)
             {
-                questText.text = playerQuestComponent.quest.endStation.stationName;
+                questText.text = playerQuestComponent.quest.endStation.StationName;
             }
             else
             {

@@ -55,7 +55,7 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
 
             if (blip.BlipUIText)
             {
-                blip.BlipUIText.rectTransform.anchoredPosition = screenPoint + new Vector2(0.0f, 3.5f);
+                blip.BlipUIText.rectTransform.anchoredPosition = screenPoint + new Vector2(0.0f, 6.0f);
             }
 
             blip.BlipUIImage.rectTransform.anchoredPosition = screenPoint;
@@ -63,6 +63,11 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
             if (blip.rotate)
             {
                 blip.BlipUIImage.rectTransform.rotation = blip.transform.rotation;
+            }
+
+            if (blip.isPlayer)
+            {
+                blip.BlipUIImage.transform.SetAsLastSibling();
             }
         }
     }
@@ -79,7 +84,8 @@ public class UIMapComponent : MonoBehaviour, IPointerClickHandler
 
     private void CreateUIBlipText(MapBlipComponent blip)
     {
-        GameObject textObject = Instantiate(textPrefab, transform) as GameObject;
+        GameObject textObject = Instantiate(textPrefab, transform.position, Quaternion.identity) as GameObject;
+        textObject.transform.SetParent(transform, false);
         textObject.name = blip.name + "_text";
         blip.BlipUIText = textObject.GetComponent<Text>();
         blip.BlipUIText.text = blip.blipName;

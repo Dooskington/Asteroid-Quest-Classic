@@ -28,6 +28,9 @@ public class ShipCrewComponent : MonoBehaviour
 
     private void Update()
     {
+        hunger = Mathf.Clamp(hunger, 0, maxHunger);
+        UpdateUI();
+
         if (shipDocking.IsDocked)
         {
             return;
@@ -37,10 +40,6 @@ public class ShipCrewComponent : MonoBehaviour
         {
             AddHunger();
         }
-
-        hunger = Mathf.Clamp(hunger, 0, maxHunger);
-
-        UpdateUI();
     }
 
     private void UpdateUI()

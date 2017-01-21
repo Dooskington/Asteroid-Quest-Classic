@@ -108,14 +108,14 @@ public class PlayerControllerComponent : MonoBehaviour
 
         thrustSlider.value = Mathf.Lerp(thrustSlider.value, shipMovementComponent.thrust, 2.5f * Time.deltaTime);
 
+        mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
+        statsPanel.SetActive(shipDocking.IsDocked || Input.GetKey(KeyCode.Tab));
+        questPanel.SetActive(shipDocking.IsDocked || Input.GetKey(KeyCode.Tab));
+
         if (shipDocking.IsDocked)
         {
             return;
         }
-
-        mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
-        statsPanel.SetActive(Input.GetKey(KeyCode.Tab));
-        questPanel.SetActive(Input.GetKey(KeyCode.Tab));
 
         if (Input.GetKeyDown(KeyCode.Q))
         {

@@ -108,12 +108,13 @@ public class UIStationComponent : MonoBehaviour
     {
         buySuccessAudio.Play();
         playerQuest.BeginQuest(quest);
+        station.GenerateQuests();
         ConstructUI();
     }
 
     private void ConstructUI()
     {
-        title.text = station.stationName;
+        title.text = station.StationName;
 
         rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 5);
         repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 5);

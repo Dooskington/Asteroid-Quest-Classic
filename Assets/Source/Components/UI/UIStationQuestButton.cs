@@ -20,14 +20,14 @@ public class UIStationQuestButton : MonoBehaviour
         this.quest = quest;
         this.stationUI = stationUI;
 
-        endStationName.text = quest.endStation.stationName;
+        endStationName.text = quest.endStation.StationName;
         rewardCredits.text = quest.rewardCredits.ToString();
 
-        if (quest.distance >= 100)
+        if (quest.distance >= 400)
         {
             safety.color = hardColor;
         }
-        else if (quest.distance >= 50)
+        else if (quest.distance >= 250)
         {
             safety.color = normalColor;
         }

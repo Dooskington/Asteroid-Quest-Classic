@@ -13,6 +13,7 @@ public class MapBlipComponent : MonoBehaviour
     public Image BlipUIImage { get; set; }
     public Text BlipUIText { get; set; }
     public bool rotate = false;
+    public bool isPlayer = false;
 
     private void Awake()
     {
