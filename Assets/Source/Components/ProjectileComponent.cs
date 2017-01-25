@@ -18,15 +18,18 @@ public class ProjectileComponent : MonoBehaviour
     private void Start()
     {
         Destroy(gameObject, lifetimeSeconds);
-        rigidbodyComponent.AddForce(transform.right * moveSpeed * Time.deltaTime, ForceMode2D.Impulse);
+
+        rigidbodyComponent.velocity = -transform.up * moveSpeed;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (other.gameObject.layer == owner.layer)
+        /*
+        if (collider.gameObject.layer == owner.layer)
         {
             return;
         }
+        */
 
         Destroy(gameObject);
     }

@@ -11,11 +11,11 @@ public class PlayerControllerComponent : MonoBehaviour
     public GameObject questPanel;
     public UITargetComponent infoPanel;
     public Slider thrustSlider;
-    public TurretComponent turretComponent;
     public int credits;
     public int score;
 
     private RaycastHit2D mouseRayHit;
+    private ShipWeaponComponent shipWeapon;
     private ShipMovementComponent shipMovementComponent;
     private ShipReactorComponent shipReactor;
     private ShipCrewComponent shipCrew;
@@ -90,6 +90,7 @@ public class PlayerControllerComponent : MonoBehaviour
 
     private void Awake()
     {
+        shipWeapon = GetComponent<ShipWeaponComponent>();
         shipMovementComponent = GetComponent<ShipMovementComponent>();
         shipReactor = GetComponent<ShipReactorComponent>();
         shipCrew = GetComponent<ShipCrewComponent>();
@@ -98,12 +99,9 @@ public class PlayerControllerComponent : MonoBehaviour
 
     private void Update()
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (Input.GetButton("Fire"))
         {
-            if (Input.GetMouseButton(0))
-            {
-                turretComponent.Fire();
-            }
+            shipWeapon.Fire();
         }
 
         thrustSlider.value = Mathf.Lerp(thrustSlider.value, shipMovementComponent.thrust, 2.5f * Time.deltaTime);
@@ -117,19 +115,7 @@ public class PlayerControllerComponent : MonoBehaviour
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            turretComponent.isActive = !turretComponent.isActive;
-        }
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            shipMovementComponent.IncreaseThrust();
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            shipMovementComponent.DecreaseThrust();
-        }
+        shipMovementComponent.thrust = Input.GetAxis("Vertical");
 
         if (Input.GetKey(KeyCode.A))
         {
@@ -139,7 +125,5 @@ public class PlayerControllerComponent : MonoBehaviour
         {
             shipMovementComponent.TurnRight();
         }
-
-        turretComponent.target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 }

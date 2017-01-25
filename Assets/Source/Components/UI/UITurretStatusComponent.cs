@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UITurretStatusComponent : MonoBehaviour
 {
-    public TurretComponent turretComponent;
+    public ShipWeaponComponent turretComponent;
     public Color activeColor;
     public Color inactiveColor;
 
@@ -18,6 +18,10 @@ public class UITurretStatusComponent : MonoBehaviour
 
     private void Update()
     {
+        textComponent.text = "Active";
+        textComponent.color = activeColor;
+
+        /*
 		if (turretComponent.isActive)
         {
             textComponent.text = "Active";
@@ -28,5 +32,6 @@ public class UITurretStatusComponent : MonoBehaviour
             textComponent.text = "Inactive";
             textComponent.color = inactiveColor;
         }
-	}
+        */
+    }
 }

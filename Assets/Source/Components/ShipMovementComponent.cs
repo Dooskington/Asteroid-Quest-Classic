@@ -7,10 +7,11 @@ public class ShipMovementComponent : MonoBehaviour
     public float targetThrust = 0.0f;
     public float thrust = 0.0f;
     public float maxThrust = 1.0f;
-    public float acceleration = 100.0f;
+    public float moveSpeed = 100.0f;
     public float maxSpeed = 10.0f;
     public float rotationSpeed = 90.0f;
     public float powerUsage = 25.0f;
+    public GameObject trail;
 
     private Rigidbody2D rigidbodyComponent;
     private AudioSource audioSourceComponent;
@@ -24,24 +25,24 @@ public class ShipMovementComponent : MonoBehaviour
         rigidbodyComponent.angularVelocity = 0.0f;
     }
 
-    public void IncreaseThrust()
+    public void ThrustForward()
     {
         targetThrust += 0.35f;
     }
 
-    public void DecreaseThrust()
+    public void ThrustBackward()
     {
         targetThrust -= 0.35f;
     }
 
     public void TurnLeft()
     {
-        transform.Rotate(Vector3.forward, (thrust * rotationSpeed) * Time.deltaTime);
+        transform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
     }
 
     public void TurnRight()
     {
-        transform.Rotate(-Vector3.forward, (thrust * rotationSpeed) * Time.deltaTime);
+        transform.Rotate(-Vector3.forward, rotationSpeed * Time.deltaTime);
     }
 
     private void Awake()
@@ -53,11 +54,13 @@ public class ShipMovementComponent : MonoBehaviour
 
     private void Update()
     {
-        audioSourceComponent.volume = thrust;
+        trail.SetActive(thrust > 0.0f);
 
-        targetThrust = Mathf.Clamp(targetThrust, 0.0f, maxThrust);
-        thrust = Mathf.Lerp(thrust, targetThrust, 2.5f * Time.deltaTime);
-        thrust = Mathf.Clamp(thrust, 0.0f, maxThrust);
+        audioSourceComponent.volume = Mathf.Abs(thrust);
+
+        //targetThrust = Mathf.Clamp(targetThrust, 0.0f, maxThrust);
+        //thrust = Mathf.Lerp(thrust, targetThrust, 2.5f * Time.deltaTime);
+        thrust = Mathf.Clamp(thrust, -1.0f, 1.0f);
 
         if (shipReactor.coreHealth <= 0)
         {
@@ -70,7 +73,7 @@ public class ShipMovementComponent : MonoBehaviour
 
     private void FixedUpdate()
     {
-        rigidbodyComponent.AddForce((transform.right * (thrust * acceleration)) * Time.deltaTime);
+        rigidbodyComponent.AddForce((-transform.up * (thrust * moveSpeed)) * Time.deltaTime);
         rigidbodyComponent.velocity = Vector2.ClampMagnitude(rigidbodyComponent.velocity, maxSpeed);
     }
 }
