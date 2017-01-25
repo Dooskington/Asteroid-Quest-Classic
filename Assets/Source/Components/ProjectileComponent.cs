@@ -7,6 +7,7 @@ public class ProjectileComponent : MonoBehaviour
     public GameObject owner;
     public float moveSpeed = 200.0f;
     public float lifetimeSeconds = 2.0f;
+    public float damage = 25.0f;
 
     private Rigidbody2D rigidbodyComponent;
 
@@ -24,13 +25,6 @@ public class ProjectileComponent : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        /*
-        if (collider.gameObject.layer == owner.layer)
-        {
-            return;
-        }
-        */
-
         Destroy(gameObject);
     }
 }
