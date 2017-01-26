@@ -25,8 +25,6 @@ public class AsteroidComponent : MonoBehaviour
         float rand = Random.Range(minScale, maxScale);
         Vector3 randomScale = new Vector3(rand, rand, 1.0f);
         transform.localScale = randomScale;
-
-        GetComponent<SpinComponent>().speed = Random.Range(-20.0f, 20.0f);
     }
 
     private void TakeDamage(float amount)
