@@ -13,7 +13,7 @@ public class AudioEvent : ScriptableObject
     public bool isPitchRandom = true;
     public RangedFloat pitch;
 	
-    public void Play(Vector3 position)
+    public void Play(Vector3 position, float newVolume = -1.0f)
     {
         if (audioClips.Length == 0)
         {
@@ -30,6 +30,11 @@ public class AudioEvent : ScriptableObject
         if (isVolumeRandom)
         {
             audioSourceComponent.volume = volume.GetRandomValue();
+        }
+
+        if (newVolume != -1.0f)
+        {
+            audioSourceComponent.volume = newVolume;
         }
 
         if (isPitchRandom)

@@ -8,7 +8,7 @@ public class PlayerControllerComponent : MonoBehaviour
 {
     public GameObject mapPanel;
     public GameObject statsPanel;
-    public GameObject questPanel;
+    public GameObject cargoPanel;
     public Slider thrustSlider;
     public int credits;
     public int score;
@@ -63,8 +63,8 @@ public class PlayerControllerComponent : MonoBehaviour
         thrustSlider.value = Mathf.Lerp(thrustSlider.value, shipMovementComponent.thrust, 2.5f * Time.deltaTime);
 
         mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
-        //statsPanel.SetActive(shipDocking.IsDocked || Input.GetKey(KeyCode.Tab));
-        //questPanel.SetActive(shipDocking.IsDocked || Input.GetKey(KeyCode.Tab));
+        statsPanel.SetActive(shipDocking.IsDocked);
+        cargoPanel.SetActive(!shipDocking.IsDocked);
 
         if (shipDocking.IsDocked)
         {

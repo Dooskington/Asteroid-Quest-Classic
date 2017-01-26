@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Source.Data;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +14,9 @@ public class UIStationComponent : MonoBehaviour
     public GameObject repairCostObject;
     public Text repairCostText;
 
+    public GameObject cargoItemPrefab;
+    public RectTransform cargoPanel;
+
     public AudioEvent buySuccessAudio;
     public AudioEvent buyFailureAudio;
 
@@ -23,6 +27,7 @@ public class UIStationComponent : MonoBehaviour
     private PlayerControllerComponent player;
     private ShipReactorComponent shipReactor;
     private ShipDefenseComponent shipDefense;
+    private ShipCargoComponent shipCargo;
 
     public void Open(StationControllerComponent stationControllerComponent)
     {
@@ -31,6 +36,7 @@ public class UIStationComponent : MonoBehaviour
         player = FindObjectOfType<PlayerControllerComponent>();
         shipReactor = player.GetComponent<ShipReactorComponent>();
         shipDefense = player.GetComponent<ShipDefenseComponent>();
+        shipCargo = player.GetComponent<ShipCargoComponent>();
 
         ConstructUI();
 
@@ -72,8 +78,12 @@ public class UIStationComponent : MonoBehaviour
 
     private void ConstructUI()
     {
-        //title.text = station.StationName;
+        ConstructServicesPanel();
+        ConstructCargoPanel();
+    }
 
+    private void ConstructServicesPanel()
+    {
         rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 5);
         repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 5);
 
@@ -91,6 +101,49 @@ public class UIStationComponent : MonoBehaviour
 
         rechargeCostObject.SetActive(rechargeCost > 0);
         repairCostObject.SetActive(repairCost > 0);
+    }
+
+    private void ConstructCargoPanel()
+    {
+        foreach (Transform child in cargoPanel)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (var cargoItem in shipCargo.Ores)
+        {
+            Ore ore = cargoItem.Key;
+            int count = cargoItem.Value;
+
+            if (count <= 0)
+            {
+                return;
+            }
+
+            GameObject buttonObject = Instantiate(cargoItemPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+            buttonObject.transform.SetParent(cargoPanel, false);
+
+            Button button = buttonObject.GetComponent<Button>();
+            button.onClick.AddListener(delegate { OnClickCargoItem(buttonObject, ore); });
+
+            UIStationCargoItem item = buttonObject.GetComponent<UIStationCargoItem>();
+            item.Setup(ore, count, ore.cost);
+        }
+    }
+
+    private void OnClickCargoItem(GameObject buttonObject, Ore item)
+    {
+        int count = shipCargo.GetCount(item);
+
+        shipCargo.RemoveOre(item, count);
+        player.AddCredits(item.cost * count);
+
+        Destroy(buttonObject);
+
+        buySuccessAudio.Play();
+
+        // Reconstruct services panel to reflect new player credits
+        ConstructServicesPanel();
     }
 
 }

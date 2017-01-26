@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class UIStatsComponent : MonoBehaviour
 {
-    public Text scoreText;
     public Text creditsText;
 
     private PlayerControllerComponent playerControllerComponent;
@@ -17,7 +16,6 @@ public class UIStatsComponent : MonoBehaviour
 
     private void Update()
     {
-        scoreText.text = playerControllerComponent.score.ToString();
         creditsText.text = playerControllerComponent.credits.ToString();
     }
 }

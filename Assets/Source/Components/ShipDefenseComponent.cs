@@ -84,7 +84,8 @@ public class ShipDefenseComponent : MonoBehaviour
             return;
         }
 
-        hull -= 5.0f * lastSpeed;
-        crashAudio.Play(transform.position);
+        float damage = 5.0f * lastSpeed;
+        hull -= damage;
+        crashAudio.Play(transform.position, (damage / maxHull) * 3);
     }
 }

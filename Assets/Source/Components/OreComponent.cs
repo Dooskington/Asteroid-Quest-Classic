@@ -6,6 +6,7 @@ using UnityEngine;
 public class OreComponent : MonoBehaviour
 {
     public Ore Ore { get; set; }
+    public float lifetimeMinutes = 2.5f;
 
     private void Start()
     {
@@ -21,5 +22,7 @@ public class OreComponent : MonoBehaviour
         float rand = Random.Range(minScale, maxScale);
         Vector3 randomScale = new Vector3(rand, rand, 1.0f);
         transform.localScale = randomScale;
+
+        Destroy(gameObject, lifetimeMinutes * 60.0f);
     }
 }

@@ -9,7 +9,8 @@ namespace Assets.Source.Data
     [CreateAssetMenu(menuName = "Data/Ore")]
     public class Ore : ScriptableObject
     {
-        public string oreName;
+        public string oreName = "Ore";
         public Sprite sprite;
+        public int cost = 10;
     }
 }
