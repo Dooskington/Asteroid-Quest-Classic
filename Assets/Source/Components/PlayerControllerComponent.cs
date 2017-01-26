@@ -81,14 +81,5 @@ public class PlayerControllerComponent : MonoBehaviour
         {
             shipMovementComponent.TurnRight();
         }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-            Application.Quit();
-#endif
-        }
     }
 }
