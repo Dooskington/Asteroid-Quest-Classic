@@ -18,14 +18,14 @@ public class AsteroidSpawnerComponent : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
-        Gizmos.DrawWireCube(spawnBounds.center, spawnBounds.size);
+        Gizmos.DrawWireCube(transform.position + spawnBounds.center, spawnBounds.size);
     }
 
     private void Spawn(int amount = 1)
     {
         for(int i = 0; i < amount; i++)
         {
-            Vector3 position = spawnBounds.center + new Vector3(
+            Vector3 position = transform.position + spawnBounds.center + new Vector3(
                 Random.Range(-spawnBounds.extents.x, spawnBounds.extents.x),
                 Random.Range(-spawnBounds.extents.y, spawnBounds.extents.y),
                 Random.Range(-spawnBounds.extents.z, spawnBounds.extents.z));
