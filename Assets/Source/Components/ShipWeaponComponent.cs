@@ -11,6 +11,7 @@ public class ShipWeaponComponent : MonoBehaviour
 
     private float lastFireTime;
     private Collider2D colliderComponent;
+    private ShipReactorComponent shipReactorComponent;
 
     public void Fire()
     {
@@ -29,10 +30,12 @@ public class ShipWeaponComponent : MonoBehaviour
         Physics2D.IgnoreCollision(colliderComponent, projectile.GetComponent<Collider2D>());
 
         lastFireTime = Time.time;
+        shipReactorComponent.UsePower(100.0f);
     }
 
     private void Awake()
     {
         colliderComponent = GetComponent<Collider2D>();
+        shipReactorComponent = GetComponent<ShipReactorComponent>();
     }
 }

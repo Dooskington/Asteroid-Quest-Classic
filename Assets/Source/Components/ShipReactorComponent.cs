@@ -28,7 +28,7 @@ public class ShipReactorComponent : MonoBehaviour
 
         UpdateUI();
 
-        coreUsage = 0.0f;
+        coreUsage = 0;
     }
 
     private void UpdateUI()
