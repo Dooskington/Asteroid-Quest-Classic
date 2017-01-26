@@ -12,5 +12,6 @@ namespace Assets.Source.Data
         public string oreName = "Ore";
         public Sprite sprite;
         public int cost = 10;
+        public float dropRate = 100;
     }
 }

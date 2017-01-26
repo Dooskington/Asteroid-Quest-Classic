@@ -41,12 +41,39 @@ public class ShipCargoComponent : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
+        /*
         if (collider.CompareTag("Ore"))
         {
             OreComponent oreComponent = collider.GetComponent<OreComponent>();
             AddOre(oreComponent.Ore);
 
             Destroy(collider.gameObject);
+        }
+        */
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Ore"))
+        {
+            /*
+            collision.transform.position = Vector3.MoveTowards(
+                collision.transform.position,
+                transform.position,
+                2.5f * Time.deltaTime);
+            */
+
+            Vector3 direction = transform.position - collision.transform.position;
+            collision.gameObject.GetComponent<Rigidbody2D>().AddForce(
+                direction.normalized * 25.0f);
+
+            float distance = Vector3.Distance(transform.position, collision.transform.position);
+            if (distance <= 0.75f)
+            {
+                OreComponent oreComponent = collision.gameObject.GetComponent<OreComponent>();
+                AddOre(oreComponent.Ore);
+                Destroy(collision.gameObject);
+            }
         }
     }
 }
