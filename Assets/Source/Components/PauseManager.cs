@@ -21,6 +21,7 @@ public class PauseManager : MonoBehaviour
             isPaused = value;
             fadePanel.SetActive(isPaused);
             pausePanel.SetActive(isPaused);
+            Time.timeScale = isPaused ? 0 : 1;
         }
     }
 

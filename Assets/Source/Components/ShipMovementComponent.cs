@@ -11,7 +11,7 @@ public class ShipMovementComponent : MonoBehaviour
     public float maxSpeed = 10.0f;
     public float rotationSpeed = 90.0f;
     public float powerUsage = 25.0f;
-    public GameObject trail;
+    public TrailRenderer[] trails;
 
     private Rigidbody2D rigidbodyComponent;
     private AudioSource audioSourceComponent;
@@ -23,16 +23,6 @@ public class ShipMovementComponent : MonoBehaviour
         thrust = 0.0f;
         rigidbodyComponent.velocity = Vector3.zero;
         rigidbodyComponent.angularVelocity = 0.0f;
-    }
-
-    public void ThrustForward()
-    {
-        targetThrust += 0.35f;
-    }
-
-    public void ThrustBackward()
-    {
-        targetThrust -= 0.35f;
     }
 
     public void TurnLeft()
@@ -54,7 +44,10 @@ public class ShipMovementComponent : MonoBehaviour
 
     private void Update()
     {
-        trail.SetActive(thrust > 0.0f);
+        foreach (TrailRenderer trail in trails)
+        {
+            trail.time = thrust * 0.10f;
+        }
 
         audioSourceComponent.volume = Mathf.Abs(thrust);
 

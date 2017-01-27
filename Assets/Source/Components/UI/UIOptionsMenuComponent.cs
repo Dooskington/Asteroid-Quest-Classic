@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UIOptionsMenuComponent : MonoBehaviour
@@ -9,7 +10,9 @@ public class UIOptionsMenuComponent : MonoBehaviour
     public Toggle fullscreenToggle;
     public Toggle verticalSyncToggle;
     public Slider volumeSlider;
+    public Button backButton;
     public Button applyButton;
+    public UnityAction backAction;
 
     private List<Resolution> resolutions = new List<Resolution>();
     private List<Dropdown.OptionData> resolutionOptions = new List<Dropdown.OptionData>();
@@ -52,6 +55,8 @@ public class UIOptionsMenuComponent : MonoBehaviour
         fullscreenToggle.onValueChanged.AddListener((value) => { isFullscreen = value; Refresh(); });
         resolutionDropdown.onValueChanged.AddListener((value) => { resolution = resolutions[value]; Refresh(); });
         volumeSlider.onValueChanged.AddListener((value) => { volume = value; AudioListener.volume = value; PlayerPrefs.SetFloat("Volume", value); });
+        backButton.onClick.AddListener(() => { backAction.Invoke(); });
+        applyButton.onClick.AddListener(() => { Apply(); });
 
         screenWidth = Screen.width;
         screenHeight = Screen.height;

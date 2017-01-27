@@ -25,6 +25,11 @@ public class ProjectileComponent : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
+        if (collider.CompareTag("Dock"))
+        {
+            return;
+        }
+
         Destroy(gameObject);
     }
 }

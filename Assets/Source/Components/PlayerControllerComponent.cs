@@ -71,7 +71,10 @@ public class PlayerControllerComponent : MonoBehaviour
             return;
         }
 
-        shipMovementComponent.thrust = Input.GetAxis("Vertical");
+        if (Time.timeScale != 0)
+        {
+            shipMovementComponent.thrust = Input.GetAxis("Vertical");
+        }
 
         if (Input.GetKey(KeyCode.A))
         {
