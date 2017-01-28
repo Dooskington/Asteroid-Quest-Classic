@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class PauseManager : MonoBehaviour
 {
     public GameObject fadePanel;
-    public GameObject pausePanel;
+    public UIPauseMenu pausePanel;
 
     private bool isPaused;
     public bool IsPaused
@@ -20,7 +20,8 @@ public class PauseManager : MonoBehaviour
         {
             isPaused = value;
             fadePanel.SetActive(isPaused);
-            pausePanel.SetActive(isPaused);
+            pausePanel.State = UIPauseMenu.MenuState.Main;
+            pausePanel.gameObject.SetActive(isPaused);
             Time.timeScale = isPaused ? 0 : 1;
         }
     }

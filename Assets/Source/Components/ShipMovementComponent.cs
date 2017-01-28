@@ -11,7 +11,7 @@ public class ShipMovementComponent : MonoBehaviour
     public float maxSpeed = 10.0f;
     public float rotationSpeed = 90.0f;
     public float powerUsage = 25.0f;
-    public TrailRenderer[] trails;
+    public ParticleSystem[] trails;
 
     private Rigidbody2D rigidbodyComponent;
     private AudioSource audioSourceComponent;
@@ -44,9 +44,25 @@ public class ShipMovementComponent : MonoBehaviour
 
     private void Update()
     {
-        foreach (TrailRenderer trail in trails)
+        if (thrust > 0.0f)
         {
-            trail.time = thrust * 0.10f;
+            foreach (ParticleSystem trail in trails)
+            {
+                if (!trail.isPlaying)
+                {
+                    trail.Play();
+                }
+            }
+        }
+        else
+        {
+            foreach (ParticleSystem trail in trails)
+            {
+                if (trail.isPlaying)
+                {
+                    trail.Stop();
+                }
+            }
         }
 
         audioSourceComponent.volume = Mathf.Abs(thrust);

@@ -31,6 +31,8 @@ public class AsteroidComponent : MonoBehaviour
 
     private void Awake()
     {
+        float distanceFromCenter = Vector3.Distance(transform.position, Vector3.zero);
+
         float dropRateSum = ores.Sum(ore => ore.dropRate);
         float rand = Random.Range(1.0f, dropRateSum);
         foreach (Ore ore in ores)
@@ -49,6 +51,11 @@ public class AsteroidComponent : MonoBehaviour
         transform.localScale = transform.localScale * scalar;
 
         health = (int) oreCount.Map(minOre, maxOre, minHealth, maxHealth);
+    }
+
+    private void Start()
+    {
+        //GetComponent<SpriteRenderer>().sprite = oreType.sprite;
     }
 
     private void TakeDamage(int amount)
