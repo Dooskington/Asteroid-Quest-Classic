@@ -13,5 +13,7 @@ namespace Assets.Source.Data
         public Sprite sprite;
         public int cost = 10;
         public float dropRate = 100;
+        public float minDistance = 0.0f;
+        public float maxDistance = 5.0f;
     }
 }

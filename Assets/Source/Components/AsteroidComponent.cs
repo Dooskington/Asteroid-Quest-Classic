@@ -33,17 +33,30 @@ public class AsteroidComponent : MonoBehaviour
     {
         float distanceFromCenter = Vector3.Distance(transform.position, Vector3.zero);
 
-        float dropRateSum = ores.Sum(ore => ore.dropRate);
+        float dropRateSum = 0.0f;
+        foreach (Ore ore in ores)
+        {
+            if ((distanceFromCenter >= ore.minDistance) && (distanceFromCenter < ore.maxDistance))
+            {
+                dropRateSum += ore.dropRate;
+            }
+        }
+
         float rand = Random.Range(1.0f, dropRateSum);
         foreach (Ore ore in ores)
         {
-            rand -= ore.dropRate;
-            if (rand <= 0.0f)
+            if ((distanceFromCenter >= ore.minDistance ) && (distanceFromCenter < ore.maxDistance))
             {
-                oreType = ore;
-                break;
+                rand -= ore.dropRate;
+                if (rand <= 0.0f)
+                {
+                    oreType = ore;
+                    break;
+                }
             }
         }
+
+        //Debug.Log("distance = " + distanceFromCenter + ", dropRateSum = " + dropRateSum + ", oreType = " + oreType.oreName);
 
         oreCount = Random.Range(minOre, maxOre + 1);
 
