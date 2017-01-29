@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class ShipCargoComponent : MonoBehaviour
 {
+    public float pickupRadius = 2.5f;
     public Dictionary<Ore, int> Ores { get; set; }
 
     public void AddOre(Ore ore, int amount = 1)
@@ -39,41 +40,31 @@ public class ShipCargoComponent : MonoBehaviour
         Ores = new Dictionary<Ore, int>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collider)
+    private void LateUpdate()
     {
-        /*
-        if (collider.CompareTag("Ore"))
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, pickupRadius);
+        foreach (Collider2D collider in colliders)
         {
-            OreComponent oreComponent = collider.GetComponent<OreComponent>();
-            AddOre(oreComponent.Ore);
-
-            Destroy(collider.gameObject);
-        }
-        */
-    }
-
-    private void OnTriggerStay2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Ore"))
-        {
-            /*
-            collision.transform.position = Vector3.MoveTowards(
-                collision.transform.position,
-                transform.position,
-                2.5f * Time.deltaTime);
-            */
-
-            Vector3 direction = transform.position - collision.transform.position;
-            collision.gameObject.GetComponent<Rigidbody2D>().AddForce(
-                direction.normalized * 25.0f);
-
-            float distance = Vector3.Distance(transform.position, collision.transform.position);
-            if (distance <= 0.75f)
+            GameObject item = collider.gameObject;
+            if (item.CompareTag("Ore"))
             {
-                OreComponent oreComponent = collision.gameObject.GetComponent<OreComponent>();
-                AddOre(oreComponent.Ore);
-                Destroy(collision.gameObject);
+                Vector3 direction = transform.position - item.transform.position;
+                item.GetComponent<Rigidbody2D>().AddForce(direction.normalized * 25.0f);
+
+                float distance = Vector3.Distance(transform.position, item.transform.position);
+                if (distance <= 0.65f)
+                {
+                    OreComponent oreComponent = item.GetComponent<OreComponent>();
+                    AddOre(oreComponent.Ore);
+                    Destroy(item);
+                }
             }
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, pickupRadius);
     }
 }

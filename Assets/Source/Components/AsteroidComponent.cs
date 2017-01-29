@@ -9,7 +9,7 @@ public class AsteroidComponent : MonoBehaviour
 {
     public GameObject orePrefab;
     public Ore[] ores;
-    public int health;
+    public float health;
 
     private Ore oreType;
     private int minHealth = 2;
@@ -71,7 +71,7 @@ public class AsteroidComponent : MonoBehaviour
         //GetComponent<SpriteRenderer>().sprite = oreType.sprite;
     }
 
-    private void TakeDamage(int amount)
+    private void TakeDamage(float amount)
     {
         health -= amount;
         

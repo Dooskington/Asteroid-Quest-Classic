@@ -8,6 +8,7 @@ public class ShipWeaponComponent : MonoBehaviour
     public GameObject projectilePrefab;
     public AudioEvent fireAudioEvent;
     public float fireFrequency = 0.75f;
+    public float damage = 1;
 
     private float lastFireTime;
     private Collider2D colliderComponent;
@@ -22,12 +23,16 @@ public class ShipWeaponComponent : MonoBehaviour
 
         fireAudioEvent.Play(transform.position);
 
-        GameObject projectile = Instantiate(projectilePrefab,
+        GameObject projectileObject = Instantiate(projectilePrefab,
             projectileSpawn.position,
             projectileSpawn.rotation) as GameObject;
 
-        projectile.GetComponent<ProjectileComponent>().owner = gameObject;
-        Physics2D.IgnoreCollision(colliderComponent, projectile.GetComponent<Collider2D>());
+        ProjectileComponent projectile = projectileObject.GetComponent<ProjectileComponent>();
+
+        projectile.owner = gameObject;
+        projectile.damage = damage;
+
+        Physics2D.IgnoreCollision(colliderComponent, projectileObject.GetComponent<Collider2D>());
 
         lastFireTime = Time.time;
         shipReactorComponent.UsePower(100.0f);

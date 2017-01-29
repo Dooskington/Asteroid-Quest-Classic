@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Source.Data;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,6 +13,7 @@ public class PlayerControllerComponent : MonoBehaviour
     public Slider thrustSlider;
     public int credits;
     public int score;
+    public List<Upgrade> Upgrades { get; set; }
 
     private RaycastHit2D mouseRayHit;
     private ShipWeaponComponent shipWeapon;
@@ -47,6 +49,8 @@ public class PlayerControllerComponent : MonoBehaviour
 
     private void Awake()
     {
+        Upgrades = new List<Upgrade>();
+
         shipWeapon = GetComponent<ShipWeaponComponent>();
         shipMovementComponent = GetComponent<ShipMovementComponent>();
         shipReactor = GetComponent<ShipReactorComponent>();

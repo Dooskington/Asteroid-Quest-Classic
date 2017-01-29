@@ -7,7 +7,7 @@ public class ProjectileComponent : MonoBehaviour
     public GameObject owner;
     public float moveSpeed = 200.0f;
     public float lifetimeSeconds = 2.0f;
-    public int damage = 1;
+    public float damage = 1;
 
     private Rigidbody2D rigidbodyComponent;
 

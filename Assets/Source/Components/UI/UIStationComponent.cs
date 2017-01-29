@@ -17,8 +17,14 @@ public class UIStationComponent : MonoBehaviour
     public GameObject cargoItemPrefab;
     public RectTransform cargoPanel;
 
+    public GameObject shopItemPrefab;
+    public RectTransform shopPanel;
+
     public AudioEvent buySuccessAudio;
     public AudioEvent buyFailureAudio;
+    public AudioEvent upgradeSuccessAudio;
+
+    public List<Upgrade> upgrades = new List<Upgrade>();
 
     private int rechargeCost;
     private int repairCost;
@@ -28,6 +34,14 @@ public class UIStationComponent : MonoBehaviour
     private ShipReactorComponent shipReactor;
     private ShipDefenseComponent shipDefense;
     private ShipCargoComponent shipCargo;
+
+    public void Awake()
+    {
+        if (station == null)
+        {
+            gameObject.SetActive(false);
+        }
+    }
 
     public void Open(StationControllerComponent stationControllerComponent)
     {
@@ -80,6 +94,7 @@ public class UIStationComponent : MonoBehaviour
     {
         ConstructServicesPanel();
         ConstructCargoPanel();
+        ConstructShopPanel();
     }
 
     private void ConstructServicesPanel()
@@ -131,6 +146,26 @@ public class UIStationComponent : MonoBehaviour
         }
     }
 
+    private void ConstructShopPanel()
+    {
+        foreach (Transform child in shopPanel)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (Upgrade upgrade in upgrades)
+        {
+            GameObject buttonObject = Instantiate(shopItemPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+            buttonObject.transform.SetParent(shopPanel, false);
+
+            Button button = buttonObject.GetComponent<Button>();
+            button.onClick.AddListener(delegate { OnClickShopItem(buttonObject, upgrade); });
+
+            UIStationShopItem item = buttonObject.GetComponent<UIStationShopItem>();
+            item.Setup(upgrade, player);
+        }
+    }
+
     private void OnClickCargoItem(GameObject buttonObject, Ore item)
     {
         int count = shipCargo.GetCount(item);
@@ -139,11 +174,24 @@ public class UIStationComponent : MonoBehaviour
         player.AddCredits(item.cost * count);
 
         Destroy(buttonObject);
-
         buySuccessAudio.Play();
 
         // Reconstruct services panel to reflect new player credits
         ConstructServicesPanel();
+    }
+
+    private void OnClickShopItem(GameObject buttonObject, Upgrade item)
+    {
+        if (!player.TakeCredits(item.cost))
+        {
+            buyFailureAudio.Play();
+            return;
+        }
+
+        upgrades.Remove(item);
+        item.Apply(player);
+        Destroy(buttonObject);
+        upgradeSuccessAudio.Play();
     }
 
 }
