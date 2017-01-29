@@ -1,11 +1,14 @@
 ﻿using Assets.Source.Data;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ShipCargoComponent : MonoBehaviour
 {
     public float pickupRadius = 2.5f;
+    public int cargoHoldSize = 20;
+
     public Dictionary<Ore, int> Ores { get; set; }
 
     public void AddOre(Ore ore, int amount = 1)
@@ -23,7 +26,16 @@ public class ShipCargoComponent : MonoBehaviour
             return false;
         }
 
-        Ores[ore] = currentCount - amount;
+        int newAmount = currentCount - amount;
+        if (newAmount == 0)
+        {
+            Ores.Remove(ore);
+        }
+        else
+        {
+            Ores[ore] = currentCount - amount;
+        }
+
         return true;
     }
 
@@ -35,6 +47,11 @@ public class ShipCargoComponent : MonoBehaviour
         return count;
     }
 
+    public bool IsCargoHoldFull()
+    {
+        return Ores.Values.Sum() >= cargoHoldSize;
+    }
+
     private void Awake()
     {
         Ores = new Dictionary<Ore, int>();
@@ -42,9 +59,19 @@ public class ShipCargoComponent : MonoBehaviour
 
     private void LateUpdate()
     {
+        PickupOres();
+    }
+
+    private void PickupOres()
+    {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, pickupRadius);
         foreach (Collider2D collider in colliders)
         {
+            if (IsCargoHoldFull())
+            {
+                return;
+            }
+
             GameObject item = collider.gameObject;
             if (item.CompareTag("Ore"))
             {

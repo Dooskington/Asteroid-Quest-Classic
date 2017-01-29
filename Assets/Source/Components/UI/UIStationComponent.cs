@@ -132,7 +132,7 @@ public class UIStationComponent : MonoBehaviour
 
             if (count <= 0)
             {
-                return;
+                continue;
             }
 
             GameObject buttonObject = Instantiate(cargoItemPrefab, Vector3.zero, Quaternion.identity) as GameObject;
@@ -155,6 +155,23 @@ public class UIStationComponent : MonoBehaviour
 
         foreach (Upgrade upgrade in upgrades)
         {
+            // Only sell this upgrade if the player has the prerequisites
+            bool isAvailable = true;
+            foreach (Upgrade requiredUpgrade in upgrade.requiredUpgrades)
+            {
+                Debug.Log(requiredUpgrade.upgradeName);
+                if (!player.Upgrades.Contains(requiredUpgrade))
+                {
+                    isAvailable = false;
+                    break;
+                }
+            }
+
+            if (!isAvailable)
+            {
+                continue;
+            }
+
             GameObject buttonObject = Instantiate(shopItemPrefab, Vector3.zero, Quaternion.identity) as GameObject;
             buttonObject.transform.SetParent(shopPanel, false);
 
@@ -192,6 +209,8 @@ public class UIStationComponent : MonoBehaviour
         item.Apply(player);
         Destroy(buttonObject);
         upgradeSuccessAudio.Play();
+
+        ConstructShopPanel();
     }
 
 }

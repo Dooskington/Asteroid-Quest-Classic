@@ -2,11 +2,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UICargoComponent : MonoBehaviour
 {
     public Ore[] ores;
     public GameObject oreUIPrefab;
+    public RectTransform contentPanel;
+    public Text statusText;
     public Dictionary<Ore, UIOreComponent> oreUIs;
 
     private int totalOreCount = 0;
@@ -17,13 +20,13 @@ public class UICargoComponent : MonoBehaviour
     {
         oreUIs = new Dictionary<Ore, UIOreComponent>();
 
-        canvasGroup = GetComponent<CanvasGroup>();
+        canvasGroup = contentPanel.gameObject.GetComponent<CanvasGroup>();
         shipCargoComponent = FindObjectOfType<ShipCargoComponent>();
     }
 
     private void Start()
     {
-        foreach (Transform child in transform)
+        foreach (Transform child in contentPanel)
         {
             Destroy(child.gameObject);
         }
@@ -31,7 +34,7 @@ public class UICargoComponent : MonoBehaviour
         foreach (Ore ore in ores)
         {
             GameObject oreUIObject = Instantiate(oreUIPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-            oreUIObject.transform.SetParent(transform, false);
+            oreUIObject.transform.SetParent(contentPanel, false);
 
             UIOreComponent ui = oreUIObject.GetComponent<UIOreComponent>();
             ui.Ore = ore;
@@ -42,6 +45,8 @@ public class UICargoComponent : MonoBehaviour
 
     private void Update()
     {
+        statusText.gameObject.SetActive(shipCargoComponent.IsCargoHoldFull());
+
         foreach (Ore ore in ores)
         {
             UIOreComponent ui = oreUIs[ore];
