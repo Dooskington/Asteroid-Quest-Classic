@@ -56,19 +56,12 @@ public class AsteroidComponent : MonoBehaviour
             }
         }
 
-        //Debug.Log("distance = " + distanceFromCenter + ", dropRateSum = " + dropRateSum + ", oreType = " + oreType.oreName);
-
         oreCount = Random.Range(minOre, maxOre + 1);
 
         float scalar = oreCount.Map(minOre, maxOre, minScale, maxScale);
         transform.localScale = transform.localScale * scalar;
 
         health = (int) oreCount.Map(minOre, maxOre, minHealth, maxHealth);
-    }
-
-    private void Start()
-    {
-        //GetComponent<SpriteRenderer>().sprite = oreType.sprite;
     }
 
     private void TakeDamage(float amount)
@@ -83,10 +76,13 @@ public class AsteroidComponent : MonoBehaviour
 
     private void Die()
     {
-        for (int i = 0; i < oreCount; i++)
+        if (oreType != null)
         {
-            GameObject ore = Instantiate(orePrefab, transform.position, Quaternion.identity) as GameObject;
-            ore.GetComponent<OreComponent>().Ore = oreType;
+            for (int i = 0; i < oreCount; i++)
+            {
+                GameObject ore = Instantiate(orePrefab, transform.position, Quaternion.identity) as GameObject;
+                ore.GetComponent<OreComponent>().Ore = oreType;
+            }
         }
 
         Destroy(gameObject);
