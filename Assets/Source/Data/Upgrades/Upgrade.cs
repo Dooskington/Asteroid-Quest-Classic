@@ -15,8 +15,6 @@ namespace Assets.Source.Data
 
         public virtual void Apply(PlayerControllerComponent player)
         {
-            Debug.Log(upgradeName + " applied.");
-
             player.Upgrades.Add(this);
         }
     }

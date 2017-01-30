@@ -159,7 +159,6 @@ public class UIStationComponent : MonoBehaviour
             bool isAvailable = true;
             foreach (Upgrade requiredUpgrade in upgrade.requiredUpgrades)
             {
-                Debug.Log(requiredUpgrade.upgradeName);
                 if (!player.Upgrades.Contains(requiredUpgrade))
                 {
                     isAvailable = false;
