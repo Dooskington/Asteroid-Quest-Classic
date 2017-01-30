@@ -64,6 +64,7 @@ public class UICargoComponent : MonoBehaviour
         }
 
         canvasGroup.alpha = (totalOreCount > 0) ? 1 : 0;
+
         totalOreCount = 0;
     }
 }

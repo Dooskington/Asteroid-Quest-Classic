@@ -10,6 +10,7 @@ public class PlayerControllerComponent : MonoBehaviour
     public GameObject mapPanel;
     public GameObject statsPanel;
     public GameObject cargoPanel;
+    public UIGameOver gameOverPanel;
     public Slider thrustSlider;
     public int credits;
     public int score;
@@ -20,6 +21,7 @@ public class PlayerControllerComponent : MonoBehaviour
     private ShipMovementComponent shipMovementComponent;
     private ShipReactorComponent shipReactor;
     private ShipDockingComponent shipDocking;
+    private ShipDefenseComponent shipDefense;
 
     public void AddCredits(int amount)
     {
@@ -55,6 +57,7 @@ public class PlayerControllerComponent : MonoBehaviour
         shipMovementComponent = GetComponent<ShipMovementComponent>();
         shipReactor = GetComponent<ShipReactorComponent>();
         shipDocking = GetComponent<ShipDockingComponent>();
+        shipDefense = GetComponent<ShipDefenseComponent>();
     }
 
     private void Update()
@@ -86,6 +89,11 @@ public class PlayerControllerComponent : MonoBehaviour
         else if (Input.GetKey(KeyCode.D))
         {
             shipMovementComponent.TurnRight();
+        }
+
+        if (!gameOverPanel.isOpen && ((shipDefense.hull <= 0) || shipReactor.coreHealth <= 0))
+        {
+            gameOverPanel.Open();
         }
     }
 }

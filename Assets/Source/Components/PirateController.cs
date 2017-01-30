@@ -54,7 +54,6 @@ public class PirateController : MonoBehaviour
             {
                 correction = Quaternion.Euler(0.0f, 0.0f, -90.0f);
             }
-            Debug.Log(rand);
         }
 
         turnDirection = correction * turnDirection;
@@ -72,11 +71,11 @@ public class PirateController : MonoBehaviour
         float distance = Vector3.Distance(transform.position, player.transform.position);
         if ((distance > maxAttackDistance) || !isSightClear)
         {
-            shipMovement.thrust = 1.0f;
+            shipMovement.thrust = 0.75f;
         }
         else if (distance < minAttackDistance)
         {
-            //shipMovement.thrust = -0.1f;
+            shipMovement.thrust = -0.1f;
         }
         else
         {
