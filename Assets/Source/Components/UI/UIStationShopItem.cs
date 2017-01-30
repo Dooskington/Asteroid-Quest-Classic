@@ -22,6 +22,13 @@ public class UIStationShopItem : MonoBehaviour
         itemIconImage.sprite = upgrade.sprite;
         itemNameText.text = upgrade.upgradeName;
         itemCostText.text = upgrade.cost.ToString();
+
+        UITooltip tooltip = GetComponent<UITooltip>();
+        if (tooltip)
+        {
+            tooltip.title = upgrade.upgradeName;
+            tooltip.description = upgrade.upgradeDescription;
+        }
     }
 
     private void Awake()

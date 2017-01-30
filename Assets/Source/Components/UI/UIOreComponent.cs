@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class UIOreComponent : MonoBehaviour
 {
+    public Image image;
     public Text countText;
 
     private Ore ore;
@@ -19,7 +20,7 @@ public class UIOreComponent : MonoBehaviour
         set
         {
             ore = value;
-            GetComponent<Image>().sprite = ore.sprite;
+            image.sprite = ore.sprite;
         }
     }
 
