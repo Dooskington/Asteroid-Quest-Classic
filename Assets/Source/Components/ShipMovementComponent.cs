@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ShipMovementComponent : MonoBehaviour
 {
-    public float targetThrust = 0.0f;
     public float thrust = 0.0f;
     public float maxThrust = 1.0f;
     public float moveSpeed = 100.0f;
@@ -19,10 +18,16 @@ public class ShipMovementComponent : MonoBehaviour
 
     public void Halt()
     {
-        targetThrust = 0.0f;
         thrust = 0.0f;
         rigidbodyComponent.velocity = Vector3.zero;
         rigidbodyComponent.angularVelocity = 0.0f;
+    }
+
+    public void Turn(Vector3 direction)
+    {
+        float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) + 90.0f;
+        Quaternion q = Quaternion.AngleAxis(angle, transform.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, q, Time.deltaTime * rotationSpeed);
     }
 
     public void TurnLeft()
@@ -66,18 +71,18 @@ public class ShipMovementComponent : MonoBehaviour
         }
 
         audioSourceComponent.volume = Mathf.Abs(thrust);
-
-        //targetThrust = Mathf.Clamp(targetThrust, 0.0f, maxThrust);
-        //thrust = Mathf.Lerp(thrust, targetThrust, 2.5f * Time.deltaTime);
         thrust = Mathf.Clamp(thrust, -1.0f, 1.0f);
 
-        if (shipReactor.coreHealth <= 0)
+        if (shipReactor)
         {
-            targetThrust = 0.0f;
-            return;
-        }
+            if (shipReactor.coreHealth <= 0)
+            {
+                thrust = 0.0f;
+                return;
+            }
 
-        shipReactor.UsePower(thrust * powerUsage);
+            shipReactor.UsePower(thrust * powerUsage);
+        }
     }
 
     private void FixedUpdate()

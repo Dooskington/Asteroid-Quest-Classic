@@ -70,7 +70,7 @@ public class UIStationComponent : MonoBehaviour
             return;
         }
 
-        buySuccessAudio.Play();
+        upgradeSuccessAudio.Play();
         player.Recharge();
 
         ConstructUI();
@@ -84,7 +84,7 @@ public class UIStationComponent : MonoBehaviour
             return;
         }
 
-        buySuccessAudio.Play();
+        upgradeSuccessAudio.Play();
         shipDefense.Repair();
 
         ConstructUI();

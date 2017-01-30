@@ -67,6 +67,14 @@ public class UITooltip : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         tooltipObject.transform.position = Input.mousePosition;
     }
 
+    private void OnDisable()
+    {
+        if (tooltipObject)
+        {
+            Destroy(tooltipObject);
+        }
+    }
+
     private void PopulateTooltip()
     {
         Text titleText = tooltipObject.transform.Find("Title").gameObject.GetComponent<Text>();
