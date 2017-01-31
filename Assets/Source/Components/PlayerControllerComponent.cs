@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Source.Data;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,22 +9,27 @@ public class PlayerControllerComponent : MonoBehaviour
 {
     public GameObject mapPanel;
     public GameObject statsPanel;
-    public GameObject questPanel;
-    public UITargetComponent infoPanel;
+    public GameObject cargoPanel;
+    public UIGameOver gameOverPanel;
+    public UITutorial tutorialPanel;
     public Slider thrustSlider;
-    public TurretComponent turretComponent;
     public int credits;
     public int score;
+    public List<Upgrade> Upgrades { get; set; }
+    public GameObject explosionPrefab;
 
+    private int totalCredts;
     private RaycastHit2D mouseRayHit;
+    private ShipWeaponComponent shipWeapon;
     private ShipMovementComponent shipMovementComponent;
     private ShipReactorComponent shipReactor;
-    private ShipCrewComponent shipCrew;
     private ShipDockingComponent shipDocking;
+    private ShipDefenseComponent shipDefense;
 
     public void AddCredits(int amount)
     {
         credits += amount;
+        totalCredts += amount;
     }
 
     public bool TakeCredits(int amount)
@@ -47,88 +53,49 @@ public class PlayerControllerComponent : MonoBehaviour
         shipReactor.coreHealth = shipReactor.maxCoreHealth;
     }
 
-    public void Feed()
-    {
-        shipCrew.Feed();
-    }
-
-    public void Target(Transform target)
-    {
-        ShipTargetingComponent targeting = GetComponent<ShipTargetingComponent>();
-        if (targeting)
-        {
-            targeting.Target(target);
-        }
-    }
-
-    public void ClearTarget()
-    {
-        ShipTargetingComponent targeting = GetComponent<ShipTargetingComponent>();
-        if (targeting)
-        {
-            targeting.ClearTarget();
-        }
-    }
-
-    public void LockTarget()
-    {
-        ShipTargetingComponent targeting = GetComponent<ShipTargetingComponent>();
-        if (targeting)
-        {
-            targeting.LockTarget();
-        }
-    }
-
-    public void UnlockTarget()
-    {
-        ShipTargetingComponent targeting = GetComponent<ShipTargetingComponent>();
-        if (targeting)
-        {
-            targeting.UnlockTarget();
-        }
-    }
-
     private void Awake()
     {
+        Upgrades = new List<Upgrade>();
+
+        shipWeapon = GetComponent<ShipWeaponComponent>();
         shipMovementComponent = GetComponent<ShipMovementComponent>();
         shipReactor = GetComponent<ShipReactorComponent>();
-        shipCrew = GetComponent<ShipCrewComponent>();
         shipDocking = GetComponent<ShipDockingComponent>();
+        shipDefense = GetComponent<ShipDefenseComponent>();
+
+        totalCredts = credits;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
+
+        tutorialPanel.Open();
     }
 
     private void Update()
     {
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (gameOverPanel.isOpen)
         {
-            if (Input.GetMouseButton(0))
-            {
-                turretComponent.Fire();
-            }
+            return;
+        }
+
+        if (Input.GetButton("Fire"))
+        {
+            shipWeapon.Fire();
         }
 
         thrustSlider.value = Mathf.Lerp(thrustSlider.value, shipMovementComponent.thrust, 2.5f * Time.deltaTime);
 
-        mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
-        statsPanel.SetActive(shipDocking.IsDocked || Input.GetKey(KeyCode.Tab));
-        questPanel.SetActive(shipDocking.IsDocked || Input.GetKey(KeyCode.Tab));
+        //mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
+        cargoPanel.SetActive(!shipDocking.IsDocked);
 
         if (shipDocking.IsDocked)
         {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Time.timeScale != 0)
         {
-            turretComponent.isActive = !turretComponent.isActive;
-        }
-
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            shipMovementComponent.IncreaseThrust();
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            shipMovementComponent.DecreaseThrust();
+            shipMovementComponent.thrust = Input.GetAxis("Vertical");
         }
 
         if (Input.GetKey(KeyCode.A))
@@ -140,6 +107,26 @@ public class PlayerControllerComponent : MonoBehaviour
             shipMovementComponent.TurnRight();
         }
 
-        turretComponent.target = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        score = totalCredts;
+        foreach(Upgrade upgrade in Upgrades)
+        {
+            score += upgrade.cost;
+        }
+
+        if (!gameOverPanel.isOpen)
+        {
+            if (shipReactor.coreHealth <= 0)
+            {
+                gameOverPanel.Open("You have run out of power, and are stranded.", score);
+            }
+            else if (shipDefense.hull <= 0)
+            {
+                gameOverPanel.Open("You have perished in the vacuum of space.", score);
+
+                GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity) as GameObject;
+                Destroy(explosion, 5.0f);
+                Destroy(gameObject);
+            }
+        }
     }
 }

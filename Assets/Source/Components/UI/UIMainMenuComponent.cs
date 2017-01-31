@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class UIMainMenuComponent : MonoBehaviour
 {
     public GameObject mainPanel;
-    public GameObject optionsPanel;
+    public UIOptionsMenuComponent optionsPanel;
 
     public enum MenuState { Main, Options };
     private MenuState state = MenuState.Main;
@@ -22,13 +22,19 @@ public class UIMainMenuComponent : MonoBehaviour
             state = value;
 
             mainPanel.SetActive(state == MenuState.Main);
-            optionsPanel.SetActive(state == MenuState.Options);
+            optionsPanel.gameObject.SetActive(state == MenuState.Options);
         }
+    }
+
+    private void Awake()
+    {
+        Cursor.visible = true;
+        optionsPanel.backAction += delegate { State = MenuState.Main; };
     }
 
     public void OnClickPlay()
     {
-        SceneManager.LoadScene("Main");
+        SceneManager.LoadScene("Game");
     }
 
     public void OnClickOptions()

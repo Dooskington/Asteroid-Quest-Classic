@@ -21,14 +21,14 @@ public class ShipReactorComponent : MonoBehaviour
 
     private void Update()
     {
-        coreHealth -= (coreUsage / 5000.0f);
+        coreHealth -= (coreUsage / 1000.0f);
 
         coreHealth = Mathf.Clamp(coreHealth, 0.0f, maxCoreHealth);
         coreUsage = Mathf.Clamp(coreUsage, 0.0f, maxCoreUsage);
 
         UpdateUI();
 
-        coreUsage = 0.0f;
+        coreUsage = 0;
     }
 
     private void UpdateUI()

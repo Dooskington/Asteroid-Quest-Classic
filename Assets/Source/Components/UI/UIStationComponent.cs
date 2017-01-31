@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Source.Data;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,46 +13,51 @@ public class UIStationComponent : MonoBehaviour
     public Button repairButton;
     public GameObject repairCostObject;
     public Text repairCostText;
-    public Button feedButton;
-    public GameObject feedCostObject;
-    public Text feedCostText;
-    public Button deliverButton;
 
-    public AudioEvent buySuccessAudio;
-    public AudioEvent buyFailureAudio;
-    public GameObject questPanel;
-    public GameObject questContentPanel;
+    public GameObject cargoItemPrefab;
+    public RectTransform cargoPanel;
 
-    public GameObject questButtonPrefab;
+    public GameObject shopItemPrefab;
+    public RectTransform shopPanel;
+
+    public List<Upgrade> upgrades = new List<Upgrade>();
 
     private int rechargeCost;
     private int repairCost;
-    private int feedCost;
 
     private StationControllerComponent station;
     private PlayerControllerComponent player;
     private ShipReactorComponent shipReactor;
     private ShipDefenseComponent shipDefense;
-    private ShipCrewComponent shipCrew;
-    private PlayerQuestComponent playerQuest;
+    private ShipCargoComponent shipCargo;
+
+    public void Awake()
+    {
+        if (station == null)
+        {
+            gameObject.SetActive(false);
+        }
+    }
 
     public void Open(StationControllerComponent stationControllerComponent)
     {
         station = stationControllerComponent;
 
         player = FindObjectOfType<PlayerControllerComponent>();
-        playerQuest = player.GetComponent<PlayerQuestComponent>();
         shipReactor = player.GetComponent<ShipReactorComponent>();
         shipDefense = player.GetComponent<ShipDefenseComponent>();
-        shipCrew = player.GetComponent<ShipCrewComponent>();
+        shipCargo = player.GetComponent<ShipCargoComponent>();
 
         ConstructUI();
 
         gameObject.SetActive(true);
+
+        Cursor.visible = true;
     }
 
     public void Close()
     {
+        Cursor.visible = false;
         gameObject.SetActive(false);
     }
 
@@ -59,123 +65,140 @@ public class UIStationComponent : MonoBehaviour
     {
         if (!player.TakeCredits(rechargeCost))
         {
-            buyFailureAudio.Play();
             return;
         }
 
-        buySuccessAudio.Play();
         player.Recharge();
-
-        ConstructUI();
+        ConstructServicesPanel();
     }
 
     public void OnRepairClick()
     {
         if (!player.TakeCredits(repairCost))
         {
-            buyFailureAudio.Play();
             return;
         }
 
-        buySuccessAudio.Play();
         shipDefense.Repair();
-
-        ConstructUI();
-    }
-
-    public void OnFeedClick()
-    {
-        if (!player.TakeCredits(feedCost))
-        {
-            buyFailureAudio.Play();
-            return;
-        }
-
-        buySuccessAudio.Play();
-        player.Feed();
-
-        ConstructUI();
-    }
-
-    public void OnDeliverClick()
-    {
-        buySuccessAudio.Play();
-        playerQuest.CompleteQuest();
-        ConstructUI();
-    }
-
-    public void OnQuestClick(Quest quest)
-    {
-        buySuccessAudio.Play();
-        playerQuest.BeginQuest(quest);
-        station.GenerateQuests();
-        ConstructUI();
+        ConstructServicesPanel();
     }
 
     private void ConstructUI()
     {
-        title.text = station.StationName;
+        ConstructServicesPanel();
+        ConstructCargoPanel();
+        ConstructShopPanel();
+    }
 
-        rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 5);
+    private void ConstructServicesPanel()
+    {
+        rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 2);
         repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 5);
-        feedCost = (shipCrew.maxHunger - shipCrew.hunger) * 5;
 
         rechargeButton.interactable = player.HasCredits(rechargeCost);
         repairButton.interactable = player.HasCredits(repairCost);
-        feedButton.interactable = player.HasCredits(feedCost);
 
         rechargeCostText.text = rechargeCost.ToString();
         repairCostText.text = repairCost.ToString();
-        feedCostText.text = feedCost.ToString();
 
         rechargeCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
         repairCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
-        feedCostText.GetComponent<ContentSizeFitter>().SetLayoutHorizontal();
 
         rechargeButton.enabled = (rechargeCost > 0);
         repairButton.enabled = (repairCost > 0);
-        feedButton.enabled = (feedCost > 0);
 
         rechargeCostObject.SetActive(rechargeCost > 0);
         repairCostObject.SetActive(repairCost > 0);
-        feedCostObject.SetActive(feedCost > 0);
+    }
 
-        if (playerQuest.quest == null)
+    private void ConstructCargoPanel()
+    {
+        foreach (Transform child in cargoPanel)
         {
-            foreach (Transform child in questContentPanel.transform)
-            {
-                Destroy(child.gameObject);
-            }
-
-            foreach (Quest quest in station.Quests)
-            {
-                GameObject buttonObject = Instantiate(questButtonPrefab, Vector3.zero, Quaternion.identity) as GameObject;
-                buttonObject.transform.SetParent(questContentPanel.transform, false);
-                UIStationQuestButton questButton = buttonObject.GetComponent<UIStationQuestButton>();
-
-                questButton.Setup(quest, this);
-            }
-
-            questPanel.SetActive(true);
-            deliverButton.gameObject.SetActive(false);
-
-            questPanel.GetComponent<ContentSizeFitter>().SetLayoutVertical();
-            questContentPanel.GetComponent<ContentSizeFitter>().SetLayoutVertical();
-            questContentPanel.GetComponent<VerticalLayoutGroup>().SetLayoutVertical();
+            Destroy(child.gameObject);
         }
-        else
+
+        foreach (var cargoItem in shipCargo.Ores)
         {
-            questPanel.SetActive(false);
+            Ore ore = cargoItem.Key;
+            int count = cargoItem.Value;
 
-            if (playerQuest.quest.endStation == station)
+            if (count <= 0)
             {
-                deliverButton.gameObject.SetActive(true);
+                continue;
             }
-            else
-            {
-                deliverButton.gameObject.SetActive(false);
-            }
+
+            GameObject buttonObject = Instantiate(cargoItemPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+            buttonObject.transform.SetParent(cargoPanel, false);
+
+            Button button = buttonObject.GetComponent<Button>();
+            button.onClick.AddListener(delegate { OnClickCargoItem(buttonObject, ore); });
+
+            UIStationCargoItem item = buttonObject.GetComponent<UIStationCargoItem>();
+            item.Setup(ore, count, ore.cost);
         }
+    }
+
+    private void ConstructShopPanel()
+    {
+        foreach (Transform child in shopPanel)
+        {
+            Destroy(child.gameObject);
+        }
+
+        foreach (Upgrade upgrade in upgrades)
+        {
+            // Only sell this upgrade if the player has the prerequisites
+            bool isAvailable = true;
+            foreach (Upgrade requiredUpgrade in upgrade.requiredUpgrades)
+            {
+                if (!player.Upgrades.Contains(requiredUpgrade))
+                {
+                    isAvailable = false;
+                    break;
+                }
+            }
+
+            if (!isAvailable)
+            {
+                continue;
+            }
+
+            GameObject buttonObject = Instantiate(shopItemPrefab, Vector3.zero, Quaternion.identity) as GameObject;
+            buttonObject.transform.SetParent(shopPanel, false);
+
+            Button button = buttonObject.GetComponent<Button>();
+            button.onClick.AddListener(delegate { OnClickShopItem(buttonObject, upgrade); });
+
+            UIStationShopItem item = buttonObject.GetComponent<UIStationShopItem>();
+            item.Setup(upgrade, player);
+        }
+    }
+
+    private void OnClickCargoItem(GameObject buttonObject, Ore item)
+    {
+        int count = shipCargo.GetCount(item);
+
+        shipCargo.RemoveOre(item, count);
+        player.AddCredits(item.cost * count);
+
+        Destroy(buttonObject);
+
+        // Reconstruct services panel to reflect new player credits
+        ConstructServicesPanel();
+    }
+
+    private void OnClickShopItem(GameObject buttonObject, Upgrade item)
+    {
+        if (!player.TakeCredits(item.cost))
+        {
+            return;
+        }
+
+        upgrades.Remove(item);
+        item.Apply(player);
+        Destroy(buttonObject);
+        ConstructShopPanel();
     }
 
 }
