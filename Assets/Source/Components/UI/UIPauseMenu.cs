@@ -34,7 +34,7 @@ public class UIPauseMenu : MonoBehaviour
     {
         resumeButton.onClick.AddListener(() => { Resume(); });
         optionsButton.onClick.AddListener(() => { State = MenuState.Options; });
-        menuButton.onClick.AddListener(() => { SceneManager.LoadScene("Menu"); });
+        menuButton.onClick.AddListener(() => { Time.timeScale = 1; SceneManager.LoadScene("Menu"); });
         quitButton.onClick.AddListener(() => { Quit(); });
 
         optionsPanel.backAction += delegate { State = MenuState.Main; };
