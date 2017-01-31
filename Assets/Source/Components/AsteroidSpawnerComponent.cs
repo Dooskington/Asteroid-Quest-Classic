@@ -64,7 +64,7 @@ public class AsteroidSpawnerComponent : MonoBehaviour
                 Random.Range(-spawnBounds.extents.z, spawnBounds.extents.z));
 
             RaycastHit2D hit = Physics2D.CircleCast(position, 1.0f, Vector2.zero);
-            if (hit.collider)
+            if (hit.collider || (Vector3.Distance(position, Vector3.zero) < 15.0f))
             {
                 continue;
             }
