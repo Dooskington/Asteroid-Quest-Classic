@@ -11,6 +11,7 @@ public class PlayerControllerComponent : MonoBehaviour
     public GameObject statsPanel;
     public GameObject cargoPanel;
     public UIGameOver gameOverPanel;
+    public UITutorial tutorialPanel;
     public Slider thrustSlider;
     public int credits;
     public int score;
@@ -66,6 +67,8 @@ public class PlayerControllerComponent : MonoBehaviour
 
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Confined;
+
+        tutorialPanel.Open();
     }
 
     private void Update()
