@@ -20,10 +20,6 @@ public class UIStationComponent : MonoBehaviour
     public GameObject shopItemPrefab;
     public RectTransform shopPanel;
 
-    public AudioEvent buySuccessAudio;
-    public AudioEvent buyFailureAudio;
-    public AudioEvent upgradeSuccessAudio;
-
     public List<Upgrade> upgrades = new List<Upgrade>();
 
     private int rechargeCost;
@@ -55,10 +51,13 @@ public class UIStationComponent : MonoBehaviour
         ConstructUI();
 
         gameObject.SetActive(true);
+
+        Cursor.visible = true;
     }
 
     public void Close()
     {
+        Cursor.visible = false;
         gameObject.SetActive(false);
     }
 
@@ -66,28 +65,22 @@ public class UIStationComponent : MonoBehaviour
     {
         if (!player.TakeCredits(rechargeCost))
         {
-            buyFailureAudio.Play();
             return;
         }
 
-        upgradeSuccessAudio.Play();
         player.Recharge();
-
-        ConstructUI();
+        ConstructServicesPanel();
     }
 
     public void OnRepairClick()
     {
         if (!player.TakeCredits(repairCost))
         {
-            buyFailureAudio.Play();
             return;
         }
 
-        upgradeSuccessAudio.Play();
         shipDefense.Repair();
-
-        ConstructUI();
+        ConstructServicesPanel();
     }
 
     private void ConstructUI()
@@ -99,7 +92,7 @@ public class UIStationComponent : MonoBehaviour
 
     private void ConstructServicesPanel()
     {
-        rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 5);
+        rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 2);
         repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 5);
 
         rechargeButton.interactable = player.HasCredits(rechargeCost);
@@ -190,7 +183,6 @@ public class UIStationComponent : MonoBehaviour
         player.AddCredits(item.cost * count);
 
         Destroy(buttonObject);
-        buySuccessAudio.Play();
 
         // Reconstruct services panel to reflect new player credits
         ConstructServicesPanel();
@@ -200,15 +192,12 @@ public class UIStationComponent : MonoBehaviour
     {
         if (!player.TakeCredits(item.cost))
         {
-            buyFailureAudio.Play();
             return;
         }
 
         upgrades.Remove(item);
         item.Apply(player);
         Destroy(buttonObject);
-        upgradeSuccessAudio.Play();
-
         ConstructShopPanel();
     }
 

@@ -18,6 +18,12 @@ public class Mine : MonoBehaviour
     private float lastBlinkTime;
     private bool isTriggered;
 
+    public void Explode()
+    {
+        Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+        Destroy(gameObject);
+    }
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -40,11 +46,9 @@ public class Mine : MonoBehaviour
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    rb.AddForce(direction * 20.0f);
+                    rb.AddForce(direction * 40.0f);
                 }
             }
-
-            Debug.DrawRay(transform.position, direction);
         }
         else
         {
@@ -80,7 +84,7 @@ public class Mine : MonoBehaviour
         ShipDefenseComponent shipDefense = collision.gameObject.GetComponent<ShipDefenseComponent>();
         if (shipDefense)
         {
-            shipDefense.hull -= baseDamage;
+            shipDefense.DamageShield(baseDamage);
         }
 
         Rigidbody2D rb = collision.gameObject.GetComponent<Rigidbody2D>();
@@ -91,8 +95,15 @@ public class Mine : MonoBehaviour
             rb.AddTorque(explodeForce / 20.0f, ForceMode2D.Impulse);
         }
 
-        Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-        Destroy(gameObject);
+        Explode();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collider)
+    {
+        if (collider.CompareTag("Projectile"))
+        {
+            Explode();
+        }
     }
 
     private void OnDrawGizmos()

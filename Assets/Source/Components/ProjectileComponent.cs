@@ -25,7 +25,7 @@ public class ProjectileComponent : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.CompareTag("Dock"))
+        if (collider.CompareTag("Station"))
         {
             return;
         }

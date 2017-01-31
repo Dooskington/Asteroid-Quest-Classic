@@ -35,8 +35,8 @@ public class UIStatsComponent : MonoBehaviour
     {
         creditsText.text = player.credits.ToString();
         cargoCapacityText.text = shipCargo.cargoHoldSize.ToString();
-        weaponDamageText.text = shipWeapon.damage.ToString("0.0");
-        pickupRadiusText.text = shipCargo.pickupRadius.ToString("0.0");
+        weaponDamageText.text = shipWeapon.damage.ToString("0.00");
+        pickupRadiusText.text = shipCargo.pickupRadius.ToString("0.00");
         maxHullText.text = ((int) shipDefense.maxHull).ToString();
         maxShieldText.text = ((int) shipDefense.maxShield).ToString();
         maxReactorText.text = ((int) shipReactor.maxCoreHealth).ToString();

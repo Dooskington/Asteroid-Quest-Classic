@@ -15,7 +15,9 @@ public class PlayerControllerComponent : MonoBehaviour
     public int credits;
     public int score;
     public List<Upgrade> Upgrades { get; set; }
+    public GameObject explosionPrefab;
 
+    private int totalCredts;
     private RaycastHit2D mouseRayHit;
     private ShipWeaponComponent shipWeapon;
     private ShipMovementComponent shipMovementComponent;
@@ -26,6 +28,7 @@ public class PlayerControllerComponent : MonoBehaviour
     public void AddCredits(int amount)
     {
         credits += amount;
+        totalCredts += amount;
     }
 
     public bool TakeCredits(int amount)
@@ -58,10 +61,20 @@ public class PlayerControllerComponent : MonoBehaviour
         shipReactor = GetComponent<ShipReactorComponent>();
         shipDocking = GetComponent<ShipDockingComponent>();
         shipDefense = GetComponent<ShipDefenseComponent>();
+
+        totalCredts = credits;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Confined;
     }
 
     private void Update()
     {
+        if (gameOverPanel.isOpen)
+        {
+            return;
+        }
+
         if (Input.GetButton("Fire"))
         {
             shipWeapon.Fire();
@@ -91,9 +104,26 @@ public class PlayerControllerComponent : MonoBehaviour
             shipMovementComponent.TurnRight();
         }
 
-        if (!gameOverPanel.isOpen && ((shipDefense.hull <= 0) || shipReactor.coreHealth <= 0))
+        score = totalCredts;
+        foreach(Upgrade upgrade in Upgrades)
         {
-            gameOverPanel.Open();
+            score += upgrade.cost;
+        }
+
+        if (!gameOverPanel.isOpen)
+        {
+            if (shipReactor.coreHealth <= 0)
+            {
+                gameOverPanel.Open("You have run out of power, and are stranded.", score);
+            }
+            else if (shipDefense.hull <= 0)
+            {
+                gameOverPanel.Open("You have perished in the vacuum of space.", score);
+
+                GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity) as GameObject;
+                Destroy(explosion, 5.0f);
+                Destroy(gameObject);
+            }
         }
     }
 }

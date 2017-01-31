@@ -23,6 +23,7 @@ public class PauseManager : MonoBehaviour
             pausePanel.State = UIPauseMenu.MenuState.Main;
             pausePanel.gameObject.SetActive(isPaused);
             Time.timeScale = isPaused ? 0 : 1;
+            Cursor.visible = isPaused;
         }
     }
 

@@ -15,6 +15,11 @@ public class AsteroidSpawnerComponent : MonoBehaviour
 
     private void Awake()
     {
+        if (transform.position == Vector3.zero)
+        {
+            mineChance = 0;
+        }
+
         Spawn(maxAsteroids);
     }
 
@@ -26,18 +31,28 @@ public class AsteroidSpawnerComponent : MonoBehaviour
 
     private void Spawn(int amount = 1)
     {
-        float spawnMines = Random.Range(0.0f, 1.0f);
-        if (spawnMines <= mineChance)
+        if (minePrefab)
         {
-            int mineCount = Random.Range(1, maxMines + 1);
-            for (int i = 0; i < mineCount; i++)
+            float spawnMines = Random.Range(0.0f, 1.0f);
+            if (spawnMines <= mineChance)
             {
-                Vector3 position = transform.position + spawnBounds.center + new Vector3(
-                    Random.Range(-spawnBounds.extents.x, spawnBounds.extents.x),
-                    Random.Range(-spawnBounds.extents.y, spawnBounds.extents.y),
-                    Random.Range(-spawnBounds.extents.z, spawnBounds.extents.z));
+                int mineCount = Random.Range(1, maxMines + 1);
+                for (int i = 0; i < mineCount; i++)
+                {
+                    Vector3 position = transform.position + spawnBounds.center + new Vector3(
+                        Random.Range(-spawnBounds.extents.x, spawnBounds.extents.x),
+                        Random.Range(-spawnBounds.extents.y, spawnBounds.extents.y),
+                        Random.Range(-spawnBounds.extents.z, spawnBounds.extents.z));
 
-                Instantiate(minePrefab, position, Quaternion.identity, transform);
+                    RaycastHit2D hit = Physics2D.CircleCast(position, 2.5f, Vector2.zero);
+                    if (hit.collider)
+                    {
+                        mineCount++;
+                        continue;
+                    }
+
+                    Instantiate(minePrefab, position, Quaternion.identity, transform);
+                }
             }
         }
 

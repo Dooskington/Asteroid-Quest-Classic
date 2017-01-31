@@ -10,6 +10,9 @@ public class AsteroidComponent : MonoBehaviour
     public GameObject orePrefab;
     public Ore[] ores;
     public float health;
+    public Color hitColor = Color.red;
+    public Color normalColor = Color.white;
+    public GameObject explosionPrefab;
 
     private Ore oreType;
     private int minHealth = 2;
@@ -17,13 +20,16 @@ public class AsteroidComponent : MonoBehaviour
     private int oreCount;
     private int minOre = 3;
     private int maxOre = 10;
-    private float minScale = 0.75f;
-    private float maxScale = 1.75f;
+    private float minScale = 1.0f;
+    private float maxScale = 2.0f;
+    private SpriteRenderer spriteRenderer;
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
         if (collider.CompareTag("Projectile"))
         {
+            spriteRenderer.color = hitColor;
+
             ProjectileComponent projectile = collider.gameObject.GetComponent<ProjectileComponent>();
             TakeDamage(projectile.damage);
         }
@@ -62,6 +68,8 @@ public class AsteroidComponent : MonoBehaviour
         transform.localScale = transform.localScale * scalar;
 
         health = (int) oreCount.Map(minOre, maxOre, minHealth, maxHealth);
+
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void TakeDamage(float amount)
@@ -85,6 +93,12 @@ public class AsteroidComponent : MonoBehaviour
             }
         }
 
+        Instantiate(explosionPrefab, transform.position, Quaternion.identity);
         Destroy(gameObject);
+    }
+
+    private void Update()
+    {
+        spriteRenderer.color = Color.Lerp(spriteRenderer.color, normalColor, 4f * Time.deltaTime);
     }
 }

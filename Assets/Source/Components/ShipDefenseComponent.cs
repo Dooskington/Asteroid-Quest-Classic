@@ -14,8 +14,6 @@ public class ShipDefenseComponent : MonoBehaviour
     public Slider hullSlider;
     public Slider shieldSlider;
     public AudioEvent crashAudio;
-    public AudioEvent deathAudio;
-    public GameObject explosionPrefab;
 
     private float lastRechargeTime;
     private float lastSpeed;
@@ -24,6 +22,21 @@ public class ShipDefenseComponent : MonoBehaviour
     public void Repair()
     {
         hull = maxHull;
+    }
+
+    public void DamageShield(float damage)
+    {
+        float overlap = damage - shield;
+
+        if (overlap > 0)
+        {
+            shield = 0.0f;
+            hull -= overlap;
+        }
+        else
+        {
+            shield -= damage;
+        }
     }
 
     private void Awake()
@@ -50,16 +63,6 @@ public class ShipDefenseComponent : MonoBehaviour
         shield = Mathf.Clamp(shield, 0.0f, maxShield);
 
         UpdateUI();
-
-        if (hull <= 0)
-        {
-            deathAudio.Play(transform.position);
-
-            GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity) as GameObject;
-            Destroy(explosion, 5.0f);
-
-            Destroy(gameObject);
-        }
     }
 
     private void UpdateUI()

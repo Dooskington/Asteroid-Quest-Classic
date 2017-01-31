@@ -28,6 +28,7 @@ public class UIMainMenuComponent : MonoBehaviour
 
     private void Awake()
     {
+        Cursor.visible = true;
         optionsPanel.backAction += delegate { State = MenuState.Main; };
     }
 

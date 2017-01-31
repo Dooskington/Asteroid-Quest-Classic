@@ -52,6 +52,6 @@ public class AudioEvent : ScriptableObject
 
     public void Play()
     {
-        Play(Vector3.zero, 0.0f);
+        Play(Vector3.zero, -1.0f, 0.0f);
     }
 }

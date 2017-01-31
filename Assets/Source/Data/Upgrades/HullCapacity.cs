@@ -6,8 +6,8 @@ using UnityEngine;
 
 namespace Assets.Source.Data.Upgrades
 {
-    [CreateAssetMenu(menuName = "Data/Upgrade/Shield Capacity")]
-    public class ShieldCapacity : Upgrade
+    [CreateAssetMenu(menuName = "Data/Upgrade/Hull Capacity")]
+    public class HullCapacity : Upgrade
     {
         public float capacityIncreasePercentage = 0.25f;
 
@@ -16,8 +16,8 @@ namespace Assets.Source.Data.Upgrades
             base.Apply(player);
 
             ShipDefenseComponent shipDefense = player.GetComponent<ShipDefenseComponent>();
-            shipDefense.maxShield += (shipDefense.maxShield * capacityIncreasePercentage);
-            shipDefense.shield = shipDefense.maxShield;
+            shipDefense.maxHull += (shipDefense.maxHull * capacityIncreasePercentage);
+            shipDefense.hull = shipDefense.maxHull;
         }
     }
 }

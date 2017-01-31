@@ -9,8 +9,5 @@ public class StationControllerComponent : MonoBehaviour
     private void Awake()
     {
         StationDataComponent stationData = FindObjectOfType<StationDataComponent>();
-        StationName = stationData.TakeName();
-
-        GetComponent<MapBlipComponent>().blipName = StationName;
     }
 }
