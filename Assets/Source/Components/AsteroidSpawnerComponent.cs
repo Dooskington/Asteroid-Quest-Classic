@@ -10,6 +10,7 @@ public class AsteroidSpawnerComponent : MonoBehaviour
     public int maxMines = 6;
     public float mineChance = 0.25f;
     public Bounds spawnBounds;
+    public float minDistanceFromCenter = 15.0f;
 
     private List<GameObject> spawned = new List<GameObject>();
 
@@ -64,7 +65,7 @@ public class AsteroidSpawnerComponent : MonoBehaviour
                 Random.Range(-spawnBounds.extents.z, spawnBounds.extents.z));
 
             RaycastHit2D hit = Physics2D.CircleCast(position, 1.0f, Vector2.zero);
-            if (hit.collider || (Vector3.Distance(position, Vector3.zero) < 15.0f))
+            if (hit.collider || (Vector3.Distance(position, Vector3.zero) < minDistanceFromCenter))
             {
                 continue;
             }
