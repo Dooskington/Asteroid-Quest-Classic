@@ -14,9 +14,11 @@ public class PlayerControllerComponent : MonoBehaviour
     public UITutorial tutorialPanel;
     public Slider thrustSlider;
     public int credits;
+    public float sellPriceModifier;
     public int score;
     public List<Upgrade> Upgrades { get; set; }
     public GameObject explosionPrefab;
+    public GameObject navigator;
 
     private int totalCredts;
     private RaycastHit2D mouseRayHit;
@@ -83,9 +85,7 @@ public class PlayerControllerComponent : MonoBehaviour
             shipWeapon.Fire();
         }
 
-        thrustSlider.value = Mathf.Lerp(thrustSlider.value, shipMovementComponent.thrust, 2.5f * Time.deltaTime);
-
-        //mapPanel.SetActive(Input.GetKey(KeyCode.Tab));
+        navigator.SetActive(Input.GetKey(KeyCode.Tab));
         cargoPanel.SetActive(!shipDocking.IsDocked);
 
         if (shipDocking.IsDocked)
@@ -127,6 +127,20 @@ public class PlayerControllerComponent : MonoBehaviour
                 Destroy(explosion, 5.0f);
                 Destroy(gameObject);
             }
+        }
+    }
+
+    private void LateUpdate()
+    {
+        if (navigator)
+        {
+            navigator.transform.position = transform.position;
+
+            Vector3 direction = (Vector3.zero - navigator.transform.position).normalized;
+
+            float angle = (Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg) + 90.0f;
+            Quaternion q = Quaternion.AngleAxis(angle, navigator.transform.forward);
+            navigator.transform.rotation = Quaternion.Slerp(navigator.transform.rotation, q, Time.deltaTime * 10.0f);
         }
     }
 }

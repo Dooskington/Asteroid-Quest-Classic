@@ -12,6 +12,28 @@ public class WorldManager : MonoBehaviour
 
     private Dictionary<Vector2, GameObject> Chunks { get; set; }
 
+    public void Regenerate()
+    {
+        GameObject baseChunk = null;
+        Chunks.TryGetValue(Vector2.zero, out baseChunk);
+
+        foreach (var chunk in Chunks)
+        {
+            Vector2 location = chunk.Key;
+            GameObject chunkObject = chunk.Value;
+
+            if (location != Vector2.zero)
+            {
+                Destroy(chunkObject);
+            }
+        }
+
+        Chunks.Clear();
+        Chunks.Add(Vector2.zero, baseChunk);
+
+        GenerateChunk(new Vector2(0, 0), true);
+    }
+
     private void Awake()
     {
         Player = GameObject.FindGameObjectWithTag("Player");

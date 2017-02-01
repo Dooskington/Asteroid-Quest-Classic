@@ -8,8 +8,14 @@ public class ShipCargoComponent : MonoBehaviour
 {
     public float pickupRadius = 2.5f;
     public int cargoHoldSize = 20;
-
+    public bool isTransmutationEnabled = false;
+    public float transmuteFrequency = 5.0f;
+    public float transmutePowerUsage = 5.0f;
     public Dictionary<Ore, int> Ores { get; set; }
+
+    private float lastTransmuteTime;
+    private PlayerControllerComponent player;
+    private ShipReactorComponent shipReactor;
 
     public void AddOre(Ore ore, int amount = 1)
     {
@@ -55,11 +61,32 @@ public class ShipCargoComponent : MonoBehaviour
     private void Awake()
     {
         Ores = new Dictionary<Ore, int>();
+        player = GetComponent<PlayerControllerComponent>();
+        shipReactor = GetComponent<ShipReactorComponent>();
     }
 
     private void LateUpdate()
     {
         PickupOres();
+
+        if (isTransmutationEnabled && (Ores.Count > 0))
+        {
+            if (transmutePowerUsage > 0)
+            {
+                shipReactor.UsePower(transmutePowerUsage);
+            }
+
+            if ((Time.time - lastTransmuteTime) >= transmuteFrequency)
+            {
+                List<Ore> oreList = new List<Ore>(Ores.Keys);
+                Ore ore = oreList[Random.Range(0, oreList.Count)];
+
+                RemoveOre(ore);
+                player.credits += ore.cost;
+
+                lastTransmuteTime = Time.time;
+            }
+        }
     }
 
     private void PickupOres()

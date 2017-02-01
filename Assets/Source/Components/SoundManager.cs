@@ -8,6 +8,8 @@ public class SoundManager : MonoBehaviour
     public AudioSource stationMusic;
     public GameObject stationPanel;
 
+    public float backgroundVolume = 0.5f;
+
     public void Update()
     {
         if (stationPanel.activeSelf)

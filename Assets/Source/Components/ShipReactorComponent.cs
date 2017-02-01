@@ -10,6 +10,7 @@ public class ShipReactorComponent : MonoBehaviour
 
     public float coreUsage = 0.0f;
     public float maxCoreUsage = 100.0f;
+    public float usageModifier = 1.0f;
 
     public Slider coreHealthSlider;
     public Slider coreUsageSlider;
@@ -21,7 +22,7 @@ public class ShipReactorComponent : MonoBehaviour
 
     private void Update()
     {
-        coreHealth -= (coreUsage / 1000.0f);
+        coreHealth -= (coreUsage / 1000.0f) * usageModifier;
 
         coreHealth = Mathf.Clamp(coreHealth, 0.0f, maxCoreHealth);
         coreUsage = Mathf.Clamp(coreUsage, 0.0f, maxCoreUsage);

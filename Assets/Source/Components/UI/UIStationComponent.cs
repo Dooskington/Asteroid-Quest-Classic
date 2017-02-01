@@ -25,24 +25,13 @@ public class UIStationComponent : MonoBehaviour
     private int rechargeCost;
     private int repairCost;
 
-    private StationControllerComponent station;
     private PlayerControllerComponent player;
     private ShipReactorComponent shipReactor;
     private ShipDefenseComponent shipDefense;
     private ShipCargoComponent shipCargo;
 
-    public void Awake()
+    public void Open()
     {
-        if (station == null)
-        {
-            gameObject.SetActive(false);
-        }
-    }
-
-    public void Open(StationControllerComponent stationControllerComponent)
-    {
-        station = stationControllerComponent;
-
         player = FindObjectOfType<PlayerControllerComponent>();
         shipReactor = player.GetComponent<ShipReactorComponent>();
         shipDefense = player.GetComponent<ShipDefenseComponent>();
@@ -92,8 +81,8 @@ public class UIStationComponent : MonoBehaviour
 
     private void ConstructServicesPanel()
     {
-        rechargeCost = (int)Mathf.Ceil((shipReactor.maxCoreHealth - shipReactor.coreHealth) * 2);
-        repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 5);
+        rechargeCost = (int)Mathf.Ceil(shipReactor.maxCoreHealth - shipReactor.coreHealth);
+        repairCost = (int)Mathf.Ceil((shipDefense.maxHull - shipDefense.hull) * 2);
 
         rechargeButton.interactable = player.HasCredits(rechargeCost);
         repairButton.interactable = player.HasCredits(repairCost);
@@ -135,7 +124,7 @@ public class UIStationComponent : MonoBehaviour
             button.onClick.AddListener(delegate { OnClickCargoItem(buttonObject, ore); });
 
             UIStationCargoItem item = buttonObject.GetComponent<UIStationCargoItem>();
-            item.Setup(ore, count, ore.cost);
+            item.Setup(ore, count, ore.cost, player.sellPriceModifier);
         }
     }
 
@@ -150,6 +139,11 @@ public class UIStationComponent : MonoBehaviour
         {
             // Only sell this upgrade if the player has the prerequisites
             bool isAvailable = true;
+            if (player.score < upgrade.requiredNetWorth)
+            {
+                isAvailable = false;
+            }
+
             foreach (Upgrade requiredUpgrade in upgrade.requiredUpgrades)
             {
                 if (!player.Upgrades.Contains(requiredUpgrade))
@@ -180,7 +174,8 @@ public class UIStationComponent : MonoBehaviour
         int count = shipCargo.GetCount(item);
 
         shipCargo.RemoveOre(item, count);
-        player.AddCredits(item.cost * count);
+        int price = (int) ((item.cost * count) * player.sellPriceModifier);
+        player.AddCredits(price);
 
         Destroy(buttonObject);
 
@@ -198,7 +193,9 @@ public class UIStationComponent : MonoBehaviour
         upgrades.Remove(item);
         item.Apply(player);
         Destroy(buttonObject);
+        ConstructServicesPanel();
         ConstructShopPanel();
+        ConstructCargoPanel();
     }
 
 }

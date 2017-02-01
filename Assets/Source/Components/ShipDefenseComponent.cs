@@ -82,6 +82,11 @@ public class ShipDefenseComponent : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.gameObject.CompareTag("Mine"))
+        {
+            return;
+        }
+
         if (lastSpeed < 1.5f)
         {
             return;

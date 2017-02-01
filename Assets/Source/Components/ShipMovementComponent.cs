@@ -81,7 +81,7 @@ public class ShipMovementComponent : MonoBehaviour
                 return;
             }
 
-            shipReactor.UsePower(thrust * powerUsage);
+            shipReactor.UsePower(Mathf.Abs(thrust) * powerUsage);
         }
     }
 

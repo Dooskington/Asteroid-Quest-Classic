@@ -13,10 +13,11 @@ public class AsteroidComponent : MonoBehaviour
     public Color hitColor = Color.red;
     public Color normalColor = Color.white;
     public GameObject explosionPrefab;
+    public float emptyChance = 0.3f;
 
     private Ore oreType;
-    private int minHealth = 2;
-    private int maxHealth = 6;
+    private int minHealth = 4;
+    private int maxHealth = 8;
     private int oreCount;
     private int minOre = 3;
     private int maxOre = 10;
@@ -48,16 +49,20 @@ public class AsteroidComponent : MonoBehaviour
             }
         }
 
-        float rand = Random.Range(1.0f, dropRateSum);
-        foreach (Ore ore in ores)
+        float hasOre = Random.Range(0.0f, 1.0f);
+        if (hasOre > emptyChance)
         {
-            if ((distanceFromCenter >= ore.minDistance ) && (distanceFromCenter < ore.maxDistance))
+            float rand = Random.Range(1.0f, dropRateSum);
+            foreach (Ore ore in ores)
             {
-                rand -= ore.dropRate;
-                if (rand <= 0.0f)
+                if ((distanceFromCenter >= ore.minDistance) && (distanceFromCenter < ore.maxDistance))
                 {
-                    oreType = ore;
-                    break;
+                    rand -= ore.dropRate;
+                    if (rand <= 0.0f)
+                    {
+                        oreType = ore;
+                        break;
+                    }
                 }
             }
         }

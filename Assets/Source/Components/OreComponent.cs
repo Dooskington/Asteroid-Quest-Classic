@@ -10,7 +10,7 @@ public class OreComponent : MonoBehaviour
 
     private void Start()
     {
-        name = Ore.name;
+        name = Ore.oreName;
         GetComponent<SpriteRenderer>().sprite = Ore.sprite;
 
         float maxForce = 2.5f;

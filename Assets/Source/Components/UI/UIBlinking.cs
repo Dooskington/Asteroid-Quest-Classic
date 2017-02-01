@@ -5,6 +5,7 @@ using UnityEngine;
 public class UIBlinking : MonoBehaviour
 {
     public float blinkFrequency = 1.0f;
+    public AudioEvent audioEvent;
 
     private float lastBlinkTime;
     private CanvasGroup CanvasGroup { get; set; }
@@ -25,6 +26,13 @@ public class UIBlinking : MonoBehaviour
     private void Blink()
     {
         lastBlinkTime = Time.time;
-        CanvasGroup.alpha = (CanvasGroup.alpha == 1) ? 0 : 1;
+        float targetAlpha = (CanvasGroup.alpha == 1) ? 0 : 1;
+
+        Juice.Instance.FadeGroup(CanvasGroup, 0.25f, targetAlpha);
+
+        if (audioEvent && targetAlpha == 1)
+        {
+            audioEvent.Play();
+        }
     }
 }

@@ -8,7 +8,6 @@ public class ShipDockingComponent : MonoBehaviour
     public Text dockingIndicatorText;
     public UIStationComponent stationPanel;
 
-    private GameObject currentDock;
     private ShipMovementComponent shipMovementComponent;
 
     private bool isDockable = false;
@@ -47,10 +46,10 @@ public class ShipDockingComponent : MonoBehaviour
 
         shipMovementComponent.Halt();
 
-        StationControllerComponent stationControllerComponent = 
-            currentDock.transform.parent.gameObject.GetComponent<StationControllerComponent>();
+        stationPanel.Open();
 
-        stationPanel.Open(stationControllerComponent);
+        WorldManager world = FindObjectOfType<WorldManager>();
+        world.Regenerate();
     }
 
     public void Undock()
@@ -83,7 +82,6 @@ public class ShipDockingComponent : MonoBehaviour
     {
         if (other.CompareTag("Dock"))
         {
-            currentDock = other.gameObject;
             IsDockable = true;
         }
     }
@@ -92,7 +90,6 @@ public class ShipDockingComponent : MonoBehaviour
     {
         if (other.CompareTag("Dock"))
         {
-            currentDock = null;
             IsDockable = false;
         }
     }

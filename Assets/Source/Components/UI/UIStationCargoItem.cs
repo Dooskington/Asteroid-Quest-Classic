@@ -10,10 +10,12 @@ public class UIStationCargoItem : MonoBehaviour
     public Text itemNameText;
     public Text itemCostText;
 
-    public void Setup(Ore ore, int count, int cost)
+    public void Setup(Ore ore, int count, int cost, float costModifier)
     {
         itemIconImage.sprite = ore.sprite;
         itemNameText.text = ore.oreName + " [" + count + "]";
-        itemCostText.text = (cost * count).ToString();
+
+        int price = (int) ((cost * count) * costModifier);
+        itemCostText.text = price.ToString();
     }
 }

@@ -5,20 +5,60 @@ using UnityEngine.UI;
 
 public class UITutorial : MonoBehaviour
 {
-    public Button closeButton;
+    public CanvasGroup[] prompts;
+    public float promptTime = 2.5f;
+    public float fadeTime = 1.0f;
+    public float delay = 2.0f;
+
+    private int currentPromptIndex = 0;
 
     public void Open()
     {
-        closeButton.onClick.AddListener(() => { Close(); });
-        Cursor.visible = true;
+        if (prompts.Length == 0)
+        {
+            return;
+        }
+
         gameObject.SetActive(true);
-        Time.timeScale = 0;
+        Invoke("FadeToNext", delay);
     }
 
     public void Close()
     {
-        Cursor.visible = false;
         gameObject.SetActive(false);
-        Time.timeScale = 1;
+    }
+
+    private void FadeToNext()
+    {
+        if ((currentPromptIndex) == prompts.Length)
+        {
+            CanvasGroup finalPrompt = prompts[currentPromptIndex - 1];
+            FadeOut(finalPrompt);
+        }
+
+        if (prompts.Length <= currentPromptIndex)
+        {
+            return;
+        }
+
+        CanvasGroup prompt = prompts[currentPromptIndex];
+        if (prompt == null)
+        {
+            return;
+        }
+
+        if (currentPromptIndex > 0)
+        {
+            CanvasGroup fadeOut = prompts[currentPromptIndex - 1];
+            FadeOut(fadeOut);
+        }
+
+        Juice.Instance.FadeGroup(prompt, fadeTime, 1.0f, true, () => { Invoke("FadeToNext", promptTime); });
+        currentPromptIndex++;
+    }
+
+    private void FadeOut(CanvasGroup prompt)
+    {
+        Juice.Instance.FadeGroup(prompt, fadeTime / 2.0f, 0.0f, true, () => { Destroy(prompt.gameObject); });
     }
 }

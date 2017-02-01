@@ -12,6 +12,7 @@ namespace Assets.Source.Data
         public string upgradeDescription = "An upgrade.";
         public Sprite sprite;
         public int cost = 250;
+        public int requiredNetWorth = 0;
         public List<Upgrade> requiredUpgrades = new List<Upgrade>();
 
         public virtual void Apply(PlayerControllerComponent player)
