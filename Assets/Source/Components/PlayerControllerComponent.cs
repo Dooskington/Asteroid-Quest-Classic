@@ -1,4 +1,5 @@
 ﻿using Assets.Source.Data;
+using CnControls;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,7 @@ public class PlayerControllerComponent : MonoBehaviour
     public GameObject explosionPrefab;
     public GameObject navigator;
 
+    private Quaternion targetRotation;
     private int totalCredts;
     private RaycastHit2D mouseRayHit;
     private ShipWeaponComponent shipWeapon;
@@ -67,8 +69,8 @@ public class PlayerControllerComponent : MonoBehaviour
 
         totalCredts = credits;
 
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Confined;
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Confined;
 
         tutorialPanel.Open();
     }
@@ -80,7 +82,7 @@ public class PlayerControllerComponent : MonoBehaviour
             return;
         }
 
-        if (Input.GetButton("Fire"))
+        if (CnInputManager.GetButton("Fire"))
         {
             shipWeapon.Fire();
         }
@@ -95,16 +97,19 @@ public class PlayerControllerComponent : MonoBehaviour
 
         if (Time.timeScale != 0)
         {
-            shipMovementComponent.thrust = Input.GetAxis("Vertical");
-        }
+            Vector3 inputVector = new Vector3(-CnInputManager.GetAxis("Vertical"), CnInputManager.GetAxis("Horizontal"));
+            shipMovementComponent.thrust = inputVector.magnitude;
+            if (inputVector.magnitude > 0.0f)
+            {
+                var angle = (Mathf.Atan2(inputVector.y, inputVector.x) - 0.0f) * Mathf.Rad2Deg;
+                targetRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+            }
+            Debug.Log(inputVector);
 
-        if (Input.GetKey(KeyCode.A))
-        {
-            shipMovementComponent.TurnLeft();
-        }
-        else if (Input.GetKey(KeyCode.D))
-        {
-            shipMovementComponent.TurnRight();
+            if (targetRotation != Quaternion.identity)
+            {
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 10.0f * Time.deltaTime);
+            }
         }
 
         score = totalCredts;

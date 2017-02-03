@@ -13,7 +13,6 @@ public class ShipReactorComponent : MonoBehaviour
     public float usageModifier = 1.0f;
 
     public Slider coreHealthSlider;
-    public Slider coreUsageSlider;
 
     public void UsePower(float amount)
     {
@@ -35,9 +34,6 @@ public class ShipReactorComponent : MonoBehaviour
     private void UpdateUI()
     {
         coreHealthSlider.maxValue = maxCoreHealth;
-        coreUsageSlider.maxValue = maxCoreUsage;
-
         coreHealthSlider.value = Mathf.Lerp(coreHealthSlider.value, coreHealth, 2.5f * Time.deltaTime);
-        coreUsageSlider.value = Mathf.Lerp(coreUsageSlider.value, coreUsage, 2.5f * Time.deltaTime);
     }
 }
